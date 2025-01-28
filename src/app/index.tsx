@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { useState } from "react";
-import Login from "@/src/app/pages/login/login";
+import Login from "@/src/app/login";
 
 export default function Index() {
   const [showPassword, setShowPassword] = useState(false);
