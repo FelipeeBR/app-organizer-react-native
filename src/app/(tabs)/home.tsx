@@ -4,6 +4,8 @@ import { Board } from 'react-native-draganddrop-board';
 import axios from 'axios';
 import * as SecureStore from "expo-secure-store";
 import Tarefa from "../components/Tarefa";
+import { View } from "react-native";
+import Items from "../components/Items";
 
 interface ITarefa {
   id: number;
@@ -83,11 +85,6 @@ export default function Home() {
         }
     }, [listTarefas]);
 
-    const handleOpen = (item:any) => {
-        setSelectedItem(item);
-        console.log('Item pressionado:', item);
-    };
-
     const updateTarefaStatus = async (id: number, status: any) => {
         const tarefa = { ...listTarefas.find((task) => task.id === id), status };
         const token = await SecureStore.getItemAsync("authToken");
@@ -131,15 +128,22 @@ export default function Home() {
             await updateTarefaStatus(draggedItem.attributes.id, newStatus);
         }
     };
-  
 
+    const handleOpen = (item:any) => {
+        setSelectedItem(item);
+        console.log('Item pressionado:', item);
+    };
+    
     return (
-        <Board
-            boardRepository={boardRepository}
-            open={handleOpen}
-            onDragEnd={handleDragEnd}
-            isWithCountBadge={false}
-            cardContent={(task: any) => (<Tarefa key={task.id} task={task} />)}
-        />
+        <View>
+            <Items/>
+            <Board
+                boardRepository={boardRepository}
+                open={handleOpen}
+                onDragEnd={handleDragEnd}
+                isWithCountBadge={false}
+                cardContent={(task: any) => (<Tarefa key={task.id} task={task} />)}
+            />
+        </View>
     );
 }

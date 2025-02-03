@@ -2,7 +2,7 @@ import { Text, TextInput, TouchableOpacity, View, Alert, ActivityIndicator } fro
 import FontAwesome from '@expo/vector-icons/FontAwesome5';
 import { Link } from "expo-router"; 
 import { useState, useEffect } from "react";
-import { set, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import axios from "axios";
