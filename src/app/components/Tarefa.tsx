@@ -2,12 +2,15 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Modal, Button, Pressable, Platform } from "react-native";
-import { format, addDays, parse } from 'date-fns';
+import { format, parse, formatISO, parseISO } from 'date-fns';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import axios from "axios";
+import * as SecureStore from "expo-secure-store";
+import ToastManager, { Toast } from "toastify-react-native";
 
 
 const getTaskStatusDetails = (task: any) => {
@@ -19,7 +22,7 @@ const getTaskStatusDetails = (task: any) => {
     };
   }
 
-  const taskDate = addDays(new Date(task.date), 1);
+  const taskDate = new Date(task.date);
 
   if (task.status === "COMPLETED") {
     return {
@@ -47,13 +50,15 @@ const inputValidation = yup.object().shape({
   description: yup.string().required('Preencha a descrição'),
   priority: yup.string(),
   status: yup.string(),
-  date: yup.date(),
+  date: yup.date().required('Preencha a data'),
 });
 
-export default function Tarefa({ task }: any) {
+export default function Tarefa({ task, atualizarDados }: any) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectPriority, setSelectPriority] = useState();
-  const [selectStatus, setSelectStatus] = useState();
+  const [selectPriority, setSelectPriority] = useState(task.priority);
+  const [selectStatus, setSelectStatus] = useState(task.status);
+  const [selectDisciplina, setSelectDisciplina] = useState(task.disciplinaId);
+  const [date, setDate] = useState(new Date());
 
   const { register, handleSubmit, setValue, formState: { errors },} = useForm({
     resolver: yupResolver(inputValidation)});
@@ -66,13 +71,13 @@ export default function Tarefa({ task }: any) {
     register('status');
   },[register]);
 
-
   //Data
-  const [date, setDate] = useState(new Date());
-  const [dateInput, setDateInput] = useState('');
+  const taskDate = task.date ? parseISO(task.date) : new Date();
+  const [dateInput, setDateInput] = useState(format(taskDate, "dd/MM/yyyy"));
   const [showPicker, setShowPicker] = useState(false);
 
   const [statusDetails, setStatusDetails] = useState(getTaskStatusDetails(task));
+  const [disciplinas, setDisciplinas] = useState([]);
 
   useEffect(() => {
     setStatusDetails(getTaskStatusDetails(task));
@@ -87,16 +92,48 @@ export default function Tarefa({ task }: any) {
 
   const onSubmit = async (data: any) => {
     try {
-      const dataFormatada = parse(dateInput, "EEE MMM dd yyyy", new Date());
+      const dataFormatada = parse(dateInput, "dd/MM/yyyy", new Date());
       if (isNaN(dataFormatada.getTime())) {
         console.error("Erro ao converter data. Verifique o formato.");
         return;
       }
-
+      const dataISO = formatISO(dataFormatada);
       setValue('date', dataFormatada);
       setValue('priority', selectPriority);
       setValue('status', selectStatus);
-      console.log("Dados enviados: ", { ...data, date: dataFormatada, priority: selectPriority, status: selectStatus, disciplinaId: task.disciplinaId });
+
+      const token = await SecureStore.getItemAsync("authToken");
+      if (!token) {
+        console.error("Token de autenticação ausente.");
+        return;
+      }
+
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/tarefa/${task.id}`, {
+        ...data,
+        date: dataISO,
+        priority: selectPriority,
+        status: selectStatus,
+        disciplinaId: selectDisciplina,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("Dados: ",{
+        ...data,
+        date: dataISO,
+        priority: selectPriority,
+        status: selectStatus,
+        disciplinaId: selectDisciplina,
+      })
+      if(response.status === 200) {
+        atualizarDados();
+      }else{
+        Toast.error("Erro ao atualizar tarefa!");
+        console.error("Erro ao atualizar tarefa:", response.data);
+      }
+
       setModalVisible(!modalVisible);
     } catch (error) {
       console.error("Erro ao submeter os dados:", error);
@@ -111,18 +148,47 @@ export default function Tarefa({ task }: any) {
     setShowPicker(!showPicker);
   };
 
-  const onChange = ({type}: any, selectedDate: any) => {
-    if(type === 'set') {
-      const currentDate = selectedDate || date;
-      setDateInput(currentDate);
-      if(Platform.OS === 'android') {
+  const onChange = (_event: any, selectedDate?: Date) => {
+    if (selectedDate) {
+      setDate(selectedDate);
+      const formattedDate = format(selectedDate, "dd/MM/yyyy");
+      setDateInput(formattedDate);
+      setValue("date", selectedDate);
+
+      if (Platform.OS === "android") {
         togglePicker();
-        setDateInput(currentDate.toDateString());
       }
-    } else{
+    } else {
       togglePicker();
     }
-  }
+  };
+
+  useEffect(() => {
+    setValue('title', task.title);
+    setValue('description', task.description);
+    setValue('date', task.date);
+    setValue('priority', task.priority);
+    setValue('status', task.status);
+  }, []);
+
+  useEffect(() => {
+    const fetchDisciplinas = async () => {
+      try {
+        const token = await SecureStore.getItemAsync("authToken");
+        if (token) {
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/disciplinas`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setDisciplinas(response.data);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar disciplinas:", error);
+      }
+    }; 
+    fetchDisciplinas();
+  }, []);
 
 
   return (
@@ -158,7 +224,11 @@ export default function Tarefa({ task }: any) {
                       placeholder="Título"
                       placeholderTextColor="gray"
                       onChangeText={text => setValue('title', text)}
+                      defaultValue={task.title}
                     />
+                  </View>
+                  <View>
+                    {errors.title && <Text className="text-red-500">{errors.title.message}</Text>}
                   </View>
 
                   <View className="flex flex-row w-full items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white">
@@ -167,17 +237,25 @@ export default function Tarefa({ task }: any) {
                       placeholder="Descrição"
                       placeholderTextColor="gray"
                       onChangeText={text => setValue('description', text)}
+                      defaultValue={task.description}
                     />
                   </View>
+                  <View>
+                    {errors.description && <Text className="text-red-500">{errors.description.message}</Text>}
+                  </View>
+
                   <Text>Disciplina</Text>
-                  <View className="flex flex-row w-full items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white">
-                    <TextInput
-                      className="w-full"
-                      placeholder="Disciplina"
-                      placeholderTextColor="gray"
-                      editable={false}
-                    />
-                  </View>
+                  <Picker
+                    enabled={false}
+                    selectedValue={selectDisciplina}
+                    onValueChange={(itemValue, itemIndex) =>
+                      setSelectDisciplina(itemValue)
+                    }>
+                      {disciplinas.map((disciplina: any) => (
+                        <Picker.Item key={disciplina.id} label={disciplina.name} value={disciplina.id} />
+                      ))}
+                  </Picker>
+                  
                   <Text>Prioridade</Text>
                   <Picker
                     selectedValue={selectPriority}
@@ -200,7 +278,7 @@ export default function Tarefa({ task }: any) {
                     <Picker.Item label="Concluída" value="COMPLETED" />
                   </Picker>
                   
-                  <Text>Data</Text>
+                  <Text>Prazo</Text>
                   {showPicker && (
                     <DateTimePicker
                       value={date}
@@ -223,6 +301,10 @@ export default function Tarefa({ task }: any) {
                       </Pressable>
                     </View>
                   )}
+                  <View>
+                    {errors.date && <Text className="text-red-500">{errors.date.message}</Text>}
+                  </View>
+
 
                   <View>
                     <Button title="Salvar" onPress={handleSubmit(onSubmit)} />

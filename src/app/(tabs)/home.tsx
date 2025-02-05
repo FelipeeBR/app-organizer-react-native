@@ -5,7 +5,7 @@ import axios from 'axios';
 import * as SecureStore from "expo-secure-store";
 import Tarefa from "../components/Tarefa";
 import { View } from "react-native";
-import Items from "../components/Items";
+import ItemsHome from "../components/ItemsHome";
 
 interface ITarefa {
   id: number;
@@ -38,7 +38,7 @@ export default function Home() {
     const boardRepository = new BoardRepository(tarefas);
 
     useEffect(() => {
-            const fetchTarefas = async () => {
+        const fetchTarefas = async () => {
             try {
                 const tokenData = await SecureStore.getItemAsync("authToken");
                 if(!tokenData) {
@@ -101,6 +101,7 @@ export default function Home() {
                     "Content-Type": "application/json",
                 },
             });
+            atualizarDados();
             return response.data;
         } catch (error) {
             console.error('Erro ao atualizar tarefa:', error);
@@ -129,20 +130,39 @@ export default function Home() {
         }
     };
 
+    const atualizarDados = async () => {
+        try {
+            const tokenData = await SecureStore.getItemAsync("authToken");
+            if(!tokenData) {
+                console.error('Token não encontrado');
+                return;
+            }
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/tarefasUser`, {
+                headers: {
+                    Authorization: `Bearer ${String(tokenData)}`,
+                    "Content-Type": "application/json",
+                }
+            });
+            setListTarefas(response.data);
+        } catch(error: any) {
+            console.error('Erro ao buscar tarefas:', error.response.data);
+        }
+    };
+
     const handleOpen = (item:any) => {
         setSelectedItem(item);
         console.log('Item pressionado:', item);
     };
     
     return (
-        <View>
-            <Items/>
+        <View className="bg-gray-200">
+            <ItemsHome/>
             <Board
                 boardRepository={boardRepository}
                 open={handleOpen}
                 onDragEnd={handleDragEnd}
                 isWithCountBadge={false}
-                cardContent={(task: any) => (<Tarefa key={task.id} task={task} />)}
+                cardContent={(task: any) => (<Tarefa key={task.id} task={task} atualizarDados={atualizarDados} />)}
             />
         </View>
     );
