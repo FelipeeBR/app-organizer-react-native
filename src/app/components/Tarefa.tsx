@@ -183,6 +183,31 @@ export default function Tarefa({ task, atualizarDados }: any) {
     fetchDisciplinas();
   }, []);
 
+  const handleDeleteTarefa = async (id: number) => {
+    try {
+      const token = await SecureStore.getItemAsync("authToken");
+      if (!token) {
+        console.error("Token de autenticação ausente.");
+        return;
+      }
+
+      const response = await axios.delete(`${process.env.REACT_APP_API_URL}/tarefa/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.status === 200) {
+        atualizarDados();
+      } else {
+        Toast.error("Erro ao deletar tarefa!");
+        console.error("Erro ao deletar tarefa:", response.data);
+      }
+    } catch (error) {
+      console.error("Erro ao deletar tarefa:", error);
+    }
+  };
+
+
 
   return (
     <View className="w-full bg-white rounded-lg shadow-md flex flex-col justify-between border border-slate-300 p-4 mb-2">
@@ -196,7 +221,7 @@ export default function Tarefa({ task, atualizarDados }: any) {
           <FontAwesome5 name="edit" size={16} color="white"/>
         </TouchableOpacity>
 
-        <TouchableOpacity className="flex items-center justify-center bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-all focus:ring focus:ring-red-200">
+        <TouchableOpacity onPress={() => handleDeleteTarefa(task.id)} className="flex items-center justify-center bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-all focus:ring focus:ring-red-200">
           <FontAwesome5 name="trash" size={16} color="white"/>
         </TouchableOpacity>
       </View>
