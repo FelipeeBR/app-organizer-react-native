@@ -156,7 +156,7 @@ export default function Home() {
     
     return (
         <View className="bg-gray-200">
-            <ItemsHome/>
+            <ItemsHome atualizarDados={atualizarDados}/>
             <Board
                 boardRepository={boardRepository}
                 open={handleOpen}

@@ -120,13 +120,6 @@ export default function Tarefa({ task, atualizarDados }: any) {
           "Content-Type": "application/json",
         },
       });
-      console.log("Dados: ",{
-        ...data,
-        date: dataISO,
-        priority: selectPriority,
-        status: selectStatus,
-        disciplinaId: selectDisciplina,
-      })
       if(response.status === 200) {
         atualizarDados();
       }else{
@@ -306,9 +299,14 @@ export default function Tarefa({ task, atualizarDados }: any) {
                   </View>
 
 
-                  <View>
-                    <Button title="Salvar" onPress={handleSubmit(onSubmit)} />
-                    <Button title="Fechar" onPress={handleCloseModal} />
+                  <View className="flex-row items-end gap-3">
+                    <TouchableOpacity className="flex h-10 px-6 gap-2 items-center outline-none rounded-md bg-green-500" onPress={handleSubmit(onSubmit)}>
+                      <Text className="text-white text-lg">Editar</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity className="flex h-10 px-6 gap-2 items-center outline-none rounded-md bg-red-500" onPress={handleCloseModal}>
+                      <Text className="text-white text-lg">Fechar</Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
             </View>
