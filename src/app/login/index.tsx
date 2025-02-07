@@ -34,13 +34,37 @@ export default function Login() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const token = await getToken("authToken");
-      if (token) {
-        router.replace("(tabs)/home"); 
+      try {
+        const token = await SecureStore.getItemAsync("authToken");
+        if (token) {
+          const response = await axios.post(
+            `${process.env.REACT_APP_API_URL}/auth/validate-token`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${String(token)}`,
+                "Content-Type": "application/json",
+              }
+            }
+          );
+  
+          if (response.status === 200) {
+            router.replace("(tabs)/home");
+          } else {
+            router.replace("/login");
+          }
+        } else {
+          router.replace("/login");
+        }
+      } catch (error) {
+        console.error("Erro ao validar token:", error);
+        router.replace("/login");
       }
     };
+  
     checkAuth();
-  }, []);
+  }, [router]);
+  
 
   const saveToken = async (key: any, value: any) => {
     await SecureStore.setItemAsync(key, value);
