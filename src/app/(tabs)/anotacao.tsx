@@ -1,54 +1,40 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView,
   View,
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  TouchableOpacity,
-  Text
+  Text,
 } from 'react-native';
-import { RichText, Toolbar, useEditorBridge } from '@10play/tentap-editor';
+import axios from 'axios';
+import * as SecureStore from "expo-secure-store";
+import CardAnotacao from '../components/CardAnotacao';
 
 export default function Anotacao() {
-  const editor = useEditorBridge({
-    autofocus: true,
-    avoidIosKeyboard: true,
-    initialContent,
-  });
+  const [anotacoes, setAnotacoes] = useState([]);
 
-  const onSubmit = async () => {
-    const text = await editor.getHTML();
-    console.log(text);
-  };
+  useEffect(() => {
+    const fetchAnotacoes = async () => {
+      try {
+        const token = await SecureStore.getItemAsync("authToken");
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/anotacoes`, {
+          headers: {
+            Authorization: `Bearer ${String(token)}`,
+          },
+        });
+        setAnotacoes(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar anotações:', error);
+      }
+    };
+    fetchAnotacoes();
+  }, [anotacoes]);
 
   return (
-    <View style={exampleStyles.fullScreen}>
-      <SafeAreaView >
-        <RichText editor={editor} />
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={exampleStyles.keyboardAvoidingView}
-        >
-          <Toolbar editor={editor} />
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-      <TouchableOpacity onPress={onSubmit}>
-        <Text>Salvar</Text>
-      </TouchableOpacity>
+    <View>
+      <View className='flex flex-col p-4'>
+        {anotacoes.map((anotacao: any) => (
+          <CardAnotacao key={anotacao.id} info={anotacao} />
+        ))}
+      </View>
     </View>
   );
 }
 
-const exampleStyles = StyleSheet.create({
-  fullScreen: {
-    flex: 1,
-  },
-  keyboardAvoidingView: {
-    height: '50%',
-    width: '100%',
-    bottom: 0,
-  },
-});
-
-const initialContent = `bvvvbvvcvbcvbvc`;
