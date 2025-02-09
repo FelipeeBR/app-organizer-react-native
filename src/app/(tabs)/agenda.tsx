@@ -1,10 +1,74 @@
-import React from "react";
-import { Text, View } from "react-native";
+import React, {useEffect, useState} from 'react';
+import {Calendar, LocaleConfig} from 'react-native-calendars';
+import { View, Text } from 'react-native';
+import axios from 'axios';
+import * as SecureStore from "expo-secure-store";
+import CardAgenda from '../components/CardAgenda';
+
+LocaleConfig.locales['pt'] = {
+monthNames: [
+    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',  
+    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+],
+monthNamesShort: [
+    'Jan.', 'Fev.', 'Mar.', 'Abr.', 'Mai.', 'Jun.',  
+    'Jul.', 'Ago.', 'Set.', 'Out.', 'Nov.', 'Dez.'
+],
+dayNames: [
+    'Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira',  
+    'Quinta-feira', 'Sexta-feira', 'Sábado'
+],
+dayNamesShort: ['Dom.', 'Seg.', 'Ter.', 'Qua.', 'Qui.', 'Sex.', 'Sáb.'],
+today: 'Hoje'
+};
+
+LocaleConfig.defaultLocale = 'pt';
 
 export default function Agenda() {
+    const [selected, setSelected] = useState('');
+    const [agendas, setAgendas] = useState([]);
+    const [markedDates, setMarkedDates] = useState({});
+
+    useEffect(() => {
+        const fetchAgendas = async () => {
+          try {
+            const token = await SecureStore.getItemAsync("authToken");
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/agendas`, {
+              headers: {
+                Authorization: `Bearer ${String(token)}`,
+              },
+            });
+            setAgendas(response.data);
+            const formattedDates = response.data.reduce((acc: any, agenda: any) => {
+                const date = agenda.date.split('T')[0]; 
+                acc[date] = { marked: true, dotColor: 'red' }; 
+                return acc;
+            }, {});
+
+            setMarkedDates(formattedDates);
+          } catch (error) {
+            console.error('Erro ao buscar agendas:', error);
+          }
+        };
+        fetchAgendas();
+      }, [agendas]);
+
     return (
-        <View className="flex-1 justify-center items-center bg-gray-100">
-            <Text className="text-2xl font-bold mb-6">Agenda</Text>
+        <View>
+            <Calendar
+                onDayPress={(day: any) => {
+                    setSelected(day.dateString);
+                }}
+                markedDates={{
+                    ...markedDates,
+                    [selected]: { selected: true, disableTouchEvent: true, selectedDotColor: 'blue' }
+                }}
+            />
+            <View>
+                {agendas.map((agenda: any) => (
+                    <CardAgenda key={agenda.id} info={agenda} />
+                ))}
+            </View>
         </View>
     );
 }

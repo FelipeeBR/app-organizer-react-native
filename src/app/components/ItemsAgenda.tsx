@@ -16,7 +16,7 @@ const inputValidation = yup.object().shape({
     title: yup.string().required('O titulo é obrigatório'),
 });
 
-export default function ItemsAnotacao() {
+export default function ItemsAgenda() {
     const [modalVisible, setModalVisible] = useState(false);
     const handleOpen = () => {
         setModalVisible(true); 

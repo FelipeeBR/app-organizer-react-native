@@ -3,7 +3,6 @@ import {
   SafeAreaView,
   View,
   KeyboardAvoidingView,
-  Platform,
   StyleSheet,
   TouchableOpacity,
   Text,
@@ -12,10 +11,23 @@ import {
 import { RichText, Toolbar, useEditorBridge, Images } from '@10play/tentap-editor';
 import axios from 'axios';
 import * as SecureStore from "expo-secure-store";
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+const inputValidation = yup.object().shape({
+    title: yup.string().required('O titulo é obrigatório'),
+});
 
 export default function AnotacaoCreate () {
     const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
+
+    const { register, handleSubmit, setValue, formState: { errors },} = useForm({
+        resolver: yupResolver(inputValidation)});
+    
+    useEffect(() => {
+        register('title');
+    },[register]);
 
     const initialContent = `<p></p>`;
     const editor = useEditorBridge({
@@ -23,12 +35,12 @@ export default function AnotacaoCreate () {
         initialContent,
     });
   
-    const onSubmit = async () => {
+    const onSubmit = async (data: any) => {
         try {
             const description = await editor.getHTML()
             const token = await SecureStore.getItemAsync("authToken");
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/anotacao`, {
-                title: title,
+                title: data.title,
                 description: description,
                 token: token
             }, {
@@ -108,11 +120,14 @@ export default function AnotacaoCreate () {
                 className="w-full"
                 placeholder="Titulo"
                 placeholderTextColor="gray"
-                onChangeText={setTitle}
+                onChangeText={text => setValue('title', text)}
                 />
             </View>
+            <View>
+                {errors.title && <Text className="text-red-500">{errors.title.message}</Text>}
+            </View>
             <View className='flex flex-row w-full mt-2 items-start gap-2'>
-                <TouchableOpacity className='bg-green-500 p-3 rounded' onPress={onSubmit}>
+                <TouchableOpacity className='bg-green-500 p-3 rounded' onPress={handleSubmit(onSubmit)}>
                     <Text className='text-white'>Salvar</Text>
                 </TouchableOpacity>
             </View>

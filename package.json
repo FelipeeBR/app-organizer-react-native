@@ -45,6 +45,7 @@
     "react-dom": "18.3.1",
     "react-hook-form": "^7.54.2",
     "react-native": "0.76.6",
+    "react-native-calendars": "^1.1308.1",
     "react-native-dnd-board": "^0.0.9",
     "react-native-dotenv": "^3.4.11",
     "react-native-draganddrop-board": "^1.0.4",
