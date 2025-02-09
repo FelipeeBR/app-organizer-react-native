@@ -231,7 +231,7 @@ export default function Tarefa({ task, atualizarDados }: any) {
         animationType="slide" 
         transparent={true} 
         onRequestClose={handleCloseModal} 
-    >
+      >
         <View className="flex-1 justify-center items-center">
             <View className="w-[90%] bg-white rounded-lg p-4 shadow-xl border border-slate-300 m-32">
                 <Text className="flex text-slate-800 text-xl items-center justify-center">Editar Tarefa</Text>
