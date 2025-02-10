@@ -2,7 +2,7 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Modal, Button, Pressable, Platform } from "react-native";
-import { format, parse, formatISO, parseISO } from 'date-fns';
+import { format, parse, formatISO, parseISO, addDays } from 'date-fns';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useForm } from 'react-hook-form';
@@ -22,7 +22,7 @@ const getTaskStatusDetails = (task: any) => {
     };
   }
 
-  const taskDate = new Date(task.date);
+  const taskDate = addDays(new Date(task.date), 1);
 
   if (task.status === "COMPLETED") {
     return {
@@ -168,7 +168,7 @@ export default function Tarefa({ task, atualizarDados }: any) {
     const fetchDisciplinas = async () => {
       try {
         const token = await SecureStore.getItemAsync("authToken");
-        if (token) {
+        if(token) {
           const response = await axios.get(`${process.env.REACT_APP_API_URL}/disciplinas`, {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -217,11 +217,11 @@ export default function Tarefa({ task, atualizarDados }: any) {
         <Text className="ml-2">{message}</Text>
       </View>
       <View className="mt-4 flex-row gap-2">
-        <TouchableOpacity onPress={handleOpen} className="flex items-center justify-center bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all focus:ring focus:ring-blue-200">
+        <TouchableOpacity onPress={handleOpen} className="flex items-center justify-center bg-blue-500 text-white px-4 py-2 rounded-lg">
           <FontAwesome5 name="edit" size={16} color="white"/>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => handleDeleteTarefa(task.id)} className="flex items-center justify-center bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-all focus:ring focus:ring-red-200">
+        <TouchableOpacity onPress={() => handleDeleteTarefa(task.id)} className="flex items-center justify-center bg-red-500 text-white px-4 py-2 rounded-lg">
           <FontAwesome5 name="trash" size={16} color="white"/>
         </TouchableOpacity>
       </View>

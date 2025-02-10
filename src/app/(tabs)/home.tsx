@@ -4,7 +4,7 @@ import { Board } from 'react-native-draganddrop-board';
 import axios from 'axios';
 import * as SecureStore from "expo-secure-store";
 import Tarefa from "../components/Tarefa";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import ItemsHome from "../components/ItemsHome";
 
 interface ITarefa {
@@ -151,7 +151,9 @@ export default function Home() {
 
     const handleOpen = (item:any) => {
         setSelectedItem(item);
-        console.log('Item pressionado:', item);
+        Alert.alert(item.title, item.description, [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ]);
     };
     
     return (

@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import axios from 'axios';
 import * as SecureStore from "expo-secure-store";
 import CardAgenda from '../components/CardAgenda';
+import ItemsAgenda from '../components/ItemsAgenda';
 
 LocaleConfig.locales['pt'] = {
 monthNames: [
@@ -51,24 +52,27 @@ export default function Agenda() {
           }
         };
         fetchAgendas();
-      }, [agendas]);
+    }, [agendas]);
 
     return (
-        <View>
+        <View className="bg-gray-200">
+            <View>
+                <ItemsAgenda/>
+            </View>
             <Calendar
                 onDayPress={(day: any) => {
                     setSelected(day.dateString);
                 }}
                 markedDates={{
                     ...markedDates,
-                    [selected]: { selected: true, disableTouchEvent: true, selectedDotColor: 'blue' }
+                    [selected]: { selected: true, disableTouchEvent: true, selectedDotColor: 'blue', selectedColor: 'blue', dotColor: 'white', marked: true },
                 }}
             />
-            <View>
+            <ScrollView className="flex-1 p-4 min-h-[90%] bg-gray-200" contentContainerStyle={{ paddingBottom: 50 }}>
                 {agendas.map((agenda: any) => (
                     <CardAgenda key={agenda.id} info={agenda} />
                 ))}
-            </View>
+            </ScrollView>
         </View>
     );
 }

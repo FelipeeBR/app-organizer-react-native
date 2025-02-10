@@ -50,17 +50,17 @@ export default function ItemsHome({ atualizarDados}: any) {
     };
 
     const onChange = (_event: any, selectedDate?: Date) => {
-        if (selectedDate) {
-          setDate(selectedDate);
-          const formattedDate = format(selectedDate, "dd/MM/yyyy");
-          setDateInput(formattedDate);
-          setValue("date", selectedDate);
-    
-          if(Platform.OS === "android") {
-            togglePicker();
-          }
+        if(selectedDate) {
+            setDate(selectedDate);
+            const formattedDate = format(selectedDate, "dd/MM/yyyy");
+            setDateInput(formattedDate);
+            setValue("date", selectedDate);
+        
+            if(Platform.OS === "android") {
+                togglePicker();
+            }
         } else {
-          togglePicker();
+            togglePicker();
         }
     };
 
@@ -209,10 +209,10 @@ export default function ItemsHome({ atualizarDados}: any) {
                             <Text>Prazo</Text>
                             {showPicker && (
                                 <DateTimePicker
-                                value={date}
-                                mode="date"
-                                display="spinner"
-                                onChange={onChange}
+                                    value={date}
+                                    mode="date"
+                                    display="spinner"
+                                    onChange={onChange}
                                 />
                             )}
                             {!showPicker && (
