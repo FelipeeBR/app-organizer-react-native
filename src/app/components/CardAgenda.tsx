@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, View, Modal, TextInput, Platform, Pressable } f
 import FontAwesome5 from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useEffect, useMemo, useState } from "react";
-import { addHours, format, parse, parseISO } from 'date-fns';
+import { add, addDays, addHours, format, parse, parseISO } from 'date-fns';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -209,7 +209,7 @@ export default function CardAgenda({ info }: any) {
                             {!showPicker && (
                                 <Pressable onPress={togglePicker}>
                                     <View className="flex flex-row w-full items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm">
-                                        <TextInput className="w-full" placeholder="Data" placeholderTextColor="gray" editable={false} onChangeText={setDateInput} value={dateInput} />
+                                        <TextInput className="w-full" placeholder="Data" placeholderTextColor="gray" editable={false} onChangeText={setDateInput} value={format(addDays(new Date(date), 1), 'dd/MM/yyyy')} />
                                     </View>
                                 </Pressable>
                             )}

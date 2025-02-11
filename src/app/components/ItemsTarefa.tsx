@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, View, Modal, TextInput, Platform, Pressable } from "react-native";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { format, parse, formatISO } from 'date-fns';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -19,7 +19,7 @@ const inputValidation = yup.object().shape({
   date: yup.date().required('Preencha a data'),
 });
 
-export default function ItemsHome({ atualizarDados}: any) {
+export default function ItemsTarefa({ atualizarTarefas }: any) {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectDisciplina, setSelectDisciplina] = useState();
     const [selectPriority, setSelectPriority] = useState();
@@ -118,15 +118,24 @@ export default function ItemsHome({ atualizarDados}: any) {
             });
 
             if(response.status === 201) {
-                atualizarDados();
+                atualizarTarefas();
+                setModalVisible(!modalVisible);
             } else {
               console.error("Erro ao criar tarefa:", response.data);
             }
-            setModalVisible(!modalVisible);
         } catch (error) {
             console.error("Erro ao criar tarefa:", error);
         }
     }
+
+    const memoData = useMemo(() => (
+        <DateTimePicker
+            value={date ?? new Date()}
+            mode="date"
+            display="spinner"
+            onChange={onChange}
+        />
+    ), [date]);
 
     return (
         <View className="w-full flex bg-gray-200 items-end px-4 mb-5 mt-2">
@@ -207,14 +216,7 @@ export default function ItemsHome({ atualizarDados}: any) {
                             </Picker>
                             
                             <Text>Prazo</Text>
-                            {showPicker && (
-                                <DateTimePicker
-                                    value={date}
-                                    mode="date"
-                                    display="spinner"
-                                    onChange={onChange}
-                                />
-                            )}
+                            {showPicker && memoData}
                             {!showPicker && (
                                 <View className="flex flex-row w-full items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white">
                                 <Pressable onPress={togglePicker}>
