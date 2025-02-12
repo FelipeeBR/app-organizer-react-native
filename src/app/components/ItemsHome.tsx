@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, View, Modal, TextInput, Platform, Pressable } f
 import FontAwesome5 from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useEffect, useState } from "react";
-import { format, parse, formatISO } from 'date-fns';
+import { format, parse, formatISO, startOfDay } from 'date-fns';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useForm } from 'react-hook-form';
@@ -90,12 +90,13 @@ export default function ItemsHome({ atualizarDados}: any) {
     const onSubmit = async (data: any) => {
         try {
             const dataFormatada = parse(dateInput, "dd/MM/yyyy", new Date());
-            if (isNaN(dataFormatada.getTime())) {
-              console.error("Erro ao converter data. Verifique o formato.");
-              return;
-            }
-            const dataISO = formatISO(dataFormatada);
-            setValue('date', dataFormatada);
+              
+            const dataInicioDoDia = startOfDay(dataFormatada);
+            const dataISO = format(dataInicioDoDia, "yyyy-MM-dd'T'HH:mm:ss");
+        
+            console.log("dataISO:", dataISO); 
+        
+            setValue('date', dataInicioDoDia);
             setValue('priority', selectPriority);
             setValue('status', selectStatus);
     

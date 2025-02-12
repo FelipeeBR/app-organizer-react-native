@@ -2,7 +2,7 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Modal, Button, Pressable, Platform } from "react-native";
-import { format, parse, formatISO, parseISO, addDays } from 'date-fns';
+import { format, parse, formatISO, parseISO, addDays, startOfDay, add } from 'date-fns';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useForm } from 'react-hook-form';
@@ -73,7 +73,7 @@ export default function Tarefa({ task, atualizarDados }: any) {
 
   //Data
   const taskDate = task.date ? parseISO(task.date) : new Date();
-  const [dateInput, setDateInput] = useState(format(taskDate, "dd/MM/yyyy"));
+  const [dateInput, setDateInput] = useState(format(addDays(taskDate, 1), "dd/MM/yyyy"));
   const [showPicker, setShowPicker] = useState(false);
 
   const [statusDetails, setStatusDetails] = useState(getTaskStatusDetails(task));
@@ -93,21 +93,22 @@ export default function Tarefa({ task, atualizarDados }: any) {
   const onSubmit = async (data: any) => {
     try {
       const dataFormatada = parse(dateInput, "dd/MM/yyyy", new Date());
-      if (isNaN(dataFormatada.getTime())) {
-        console.error("Erro ao converter data. Verifique o formato.");
-        return;
-      }
-      const dataISO = formatISO(dataFormatada);
-      setValue('date', dataFormatada);
+  
+      const dataInicioDoDia = startOfDay(dataFormatada);
+      const dataISO = format(dataInicioDoDia, "yyyy-MM-dd'T'HH:mm:ss");
+  
+      console.log("dataISO:", dataISO); 
+  
+      setValue('date', dataInicioDoDia);
       setValue('priority', selectPriority);
       setValue('status', selectStatus);
-
+  
       const token = await SecureStore.getItemAsync("authToken");
       if (!token) {
         console.error("Token de autenticação ausente.");
         return;
       }
-
+  
       const response = await axios.put(`${process.env.REACT_APP_API_URL}/tarefa/${task.id}`, {
         ...data,
         date: dataISO,
@@ -120,13 +121,14 @@ export default function Tarefa({ task, atualizarDados }: any) {
           "Content-Type": "application/json",
         },
       });
-      if(response.status === 200) {
+  
+      if (response.status === 200) {
         atualizarDados();
-      }else{
+      } else {
         Toast.error("Erro ao atualizar tarefa!");
         console.error("Erro ao atualizar tarefa:", response.data);
       }
-
+  
       setModalVisible(!modalVisible);
     } catch (error) {
       console.error("Erro ao submeter os dados:", error);

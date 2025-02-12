@@ -61,9 +61,9 @@ export default function CardAgenda({ info }: any) {
     const onChangeDate = (_event: any, selectedDate?: Date) => {
         if(selectedDate) {
             setData(selectedDate);
-            const formattedDate = format(selectedDate, "dd/MM/yyyy");
+            const formattedDate = format(selectedDate, 'dd/MM/yyyy'); 
             setDateInput(formattedDate);
-            setValue("date", selectedDate);
+            setValue("date", selectedDate.toISOString() as any);
         
             if(Platform.OS === "android") {
                 togglePicker();
@@ -125,7 +125,7 @@ export default function CardAgenda({ info }: any) {
                 dataFormatada.getDate(),
                 horaFormatada.getHours(),
                 horaFormatada.getMinutes()
-            );
+            ).toISOString();
         } catch (error) {
             console.error(error);
             return null;
@@ -209,7 +209,7 @@ export default function CardAgenda({ info }: any) {
                             {!showPicker && (
                                 <Pressable onPress={togglePicker}>
                                     <View className="flex flex-row w-full items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm">
-                                        <TextInput className="w-full" placeholder="Data" placeholderTextColor="gray" editable={false} onChangeText={setDateInput} value={format(addDays(new Date(date), 1), 'dd/MM/yyyy')} />
+                                        <TextInput className="w-full" placeholder="Data" placeholderTextColor="gray" editable={false} onChangeText={setDateInput} value={dateInput} />
                                     </View>
                                 </Pressable>
                             )}
@@ -226,7 +226,7 @@ export default function CardAgenda({ info }: any) {
 
                             <View className="flex-row items-end gap-3">
                                 <TouchableOpacity className="flex h-10 px-6 gap-2 items-center outline-none rounded-md bg-green-500" onPress={handleSubmit(onSubmit)}>
-                                    <Text className="text-white text-lg">Atualizar</Text>
+                                    <Text className="text-white text-lg">Editar</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity className="flex h-10 px-6 gap-2 items-center outline-none rounded-md bg-red-500" onPress={handleCloseModal}>
                                     <Text className="text-white text-lg">Fechar</Text>
