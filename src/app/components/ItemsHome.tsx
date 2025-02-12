@@ -94,8 +94,6 @@ export default function ItemsHome({ atualizarDados}: any) {
             const dataInicioDoDia = startOfDay(dataFormatada);
             const dataISO = format(dataInicioDoDia, "yyyy-MM-dd'T'HH:mm:ss");
         
-            console.log("dataISO:", dataISO); 
-        
             setValue('date', dataInicioDoDia);
             setValue('priority', selectPriority);
             setValue('status', selectStatus);

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, TextInput, Pressable, Platform } from 'react-native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { format, parse, formatISO, parseISO, addDays } from 'date-fns';
+import { format, parse, formatISO, parseISO, addDays, startOfDay } from 'date-fns';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useForm, Controller } from 'react-hook-form';
@@ -28,7 +28,7 @@ export default function CardTarefa({ tarefa }: any) {
 
     const [disciplinas, setDisciplinas] = useState([]);
     const taskDate = date ? parseISO(date) : new Date();
-    const [dateInput, setDateInput] = useState(format(taskDate, "dd/MM/yyyy"));
+    const [dateInput, setDateInput] = useState(format(addDays(taskDate, 1), "dd/MM/yyyy"));
     const [showPicker, setShowPicker] = useState(false);
 
     const { register, handleSubmit, setValue, control, formState: { errors }} = useForm({
@@ -94,6 +94,13 @@ export default function CardTarefa({ tarefa }: any) {
           togglePicker();
         }
     };
+    useEffect(() => {
+        setValue('title', title);
+        setValue('description', description);
+        setValue('date', date);
+        setValue('priority', priority);
+        setValue('status', status);
+      }, []);
 
     const getStatusColor = (status: any) => {
         switch (status) {
@@ -152,11 +159,8 @@ export default function CardTarefa({ tarefa }: any) {
     const onSubmit = async (data: any) => {
         try {
           const dataFormatada = parse(dateInput, "dd/MM/yyyy", new Date());
-          if (isNaN(dataFormatada.getTime())) {
-            console.error("Erro ao converter data. Verifique o formato.");
-            return;
-          }
-          const dataISO = formatISO(dataFormatada);
+          const dataInicioDoDia = startOfDay(dataFormatada);
+          const dataISO = format(dataInicioDoDia, "yyyy-MM-dd'T'HH:mm:ss");
           setValue('date', dataFormatada);
           setValue('priority', selectPriority);
           setValue('status', selectStatus);

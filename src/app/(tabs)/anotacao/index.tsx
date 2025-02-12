@@ -5,8 +5,8 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import * as SecureStore from "expo-secure-store";
-import CardAnotacao from '../components/CardAnotacao';
-import ItemsAnotacao from '../components/ItemsAnotacao';
+import CardAnotacao from '../../components/CardAnotacao';
+import ItemsAnotacao from '../../components/ItemsAnotacao';
 
 export default function Anotacao() {
   const [anotacoes, setAnotacoes] = useState([]);
@@ -29,14 +29,14 @@ export default function Anotacao() {
   }, [anotacoes]);
 
   return (
-    <ScrollView className="bg-gray-200">
+    <View className="bg-gray-200">
       <ItemsAnotacao/>
-      <View className='flex flex-col p-4'>
+      <ScrollView className="flex-1 p-4 min-h-[80vh] bg-gray-200" contentContainerStyle={{ paddingBottom: 50 }}>
         {anotacoes.map((anotacao: any) => (
           <CardAnotacao key={anotacao.id} info={anotacao} />
         ))}
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
