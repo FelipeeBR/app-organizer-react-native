@@ -199,7 +199,7 @@ export default function CardAgenda({ info }: any) {
                     <View className="w-[90%] bg-white rounded-lg p-4 shadow-xl border border-slate-300 m-32">
                         <View className="gap-3">
                             <Text>Descrição</Text>
-                            <View className="flex flex-row w-full items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white">
+                            <View className="flex flex-row w-full px-8 py-4 items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white">
                                 <TextInput className="w-full" placeholder="Descrição" placeholderTextColor="gray" onChangeText={text => setValue("description", text)} defaultValue={description}/>
                             </View>
                             <View>{errors.description && <Text className="text-red-500">{errors.description.message}</Text>}</View>
@@ -208,7 +208,7 @@ export default function CardAgenda({ info }: any) {
                             {showPicker && memoData}
                             {!showPicker && (
                                 <Pressable onPress={togglePicker}>
-                                    <View className="flex flex-row w-full items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm">
+                                    <View className="flex flex-row w-full px-8 py-4 items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm">
                                         <TextInput className="w-full" placeholder="Data" placeholderTextColor="gray" editable={false} onChangeText={setDateInput} value={dateInput} />
                                     </View>
                                 </Pressable>

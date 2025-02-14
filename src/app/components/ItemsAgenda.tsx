@@ -150,26 +150,19 @@ export default function ItemsAgenda() {
 
     useEffect(() => {
         let isMounted = true;
-    
         const fetchData = async () => {
-            try {
-                await fetchNotificacoes();
-                const data = await getNotificacoes();
-    
-                if (isMounted) {
-                    setNotificacoes(data);
-                }
-            } catch (error) {
-                console.error("Erro ao carregar notificações:", error);
+            await fetchNotificacoes();
+            const data = await getNotificacoes();
+
+            if (isMounted) {
+                setNotificacoes(data);
             }
+
         };
-    
         fetchData();
-    
         const interval = setInterval(() => {
             fetchData();
         }, 15000);      // 15 Segundos
-    
         return () => {
             isMounted = false;
             clearInterval(interval);
@@ -197,7 +190,7 @@ export default function ItemsAgenda() {
                     <View className="w-[90%] bg-white rounded-lg p-4 shadow-xl border border-slate-300 m-32">
                         <View className="gap-3">
                             <Text>Descrição</Text>
-                            <View className="flex flex-row w-full items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white">
+                            <View className="flex flex-row w-full px-8 py-4 items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white">
                                 <TextInput className="w-full" placeholder="Descrição" placeholderTextColor="gray" onChangeText={text => setValue("description", text)} />
                             </View>
                             <View>{errors.description && <Text className="text-red-500">{errors.description.message}</Text>}</View>
@@ -206,7 +199,7 @@ export default function ItemsAgenda() {
                             {showPicker && memoData}
                             {!showPicker && (
                                 <Pressable onPress={togglePicker}>
-                                    <View className="flex flex-row w-full items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm">
+                                    <View className="flex flex-row w-full px-8 py-4 items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm">
                                         <TextInput className="w-full" placeholder="Data" placeholderTextColor="gray" editable={false} onChangeText={setDateInput} value={dateInput} />
                                     </View>
                                 </Pressable>
@@ -223,10 +216,10 @@ export default function ItemsAgenda() {
                             <View>{errors.time && <Text className="text-red-500">{errors.time.message}</Text>}</View>
 
                             <View className="flex-row items-end gap-3">
-                                <TouchableOpacity className="flex h-10 px-6 gap-2 items-center outline-none rounded-md bg-green-500" onPress={handleSubmit(onSubmit)}>
+                                <TouchableOpacity className="flex-row h-10 px-6 gap-2 items-center outline-none rounded-md bg-green-500" onPress={handleSubmit(onSubmit)}>
                                     <Text className="text-white text-lg">Adicionar</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity className="flex h-10 px-6 gap-2 items-center outline-none rounded-md bg-red-500" onPress={handleCloseModal}>
+                                <TouchableOpacity className="flex-row h-10 px-6 gap-2 items-center outline-none rounded-md bg-red-500" onPress={handleCloseModal}>
                                     <Text className="text-white text-lg">Fechar</Text>
                                 </TouchableOpacity>
                             </View>

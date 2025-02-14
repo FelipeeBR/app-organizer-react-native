@@ -11,26 +11,19 @@ export default function ItemsAnotacao() {
 
     useEffect(() => {
         let isMounted = true;
-    
         const fetchData = async () => {
-            try {
-                await fetchNotificacoes();
-                const data = await getNotificacoes();
-    
-                if (isMounted) {
-                    setNotificacoes(data);
-                }
-            } catch (error) {
-                console.error("Erro ao carregar notificações:", error);
+            await fetchNotificacoes();
+            const data = await getNotificacoes();
+
+            if (isMounted) {
+                setNotificacoes(data);
             }
+        
         };
-    
         fetchData();
-    
         const interval = setInterval(() => {
             fetchData();
         }, 15000);      // 15 Segundos
-    
         return () => {
             isMounted = false;
             clearInterval(interval);

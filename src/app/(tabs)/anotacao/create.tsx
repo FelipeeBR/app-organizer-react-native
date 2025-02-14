@@ -60,7 +60,7 @@ export default function AnotacaoCreate () {
         <View className='flex-1'>
             <Text className="text-xl font-bold m-3">Titulo</Text>
             <View className="flex m-3">
-                <View className="flex flex-row w-full items-center justify-between rounded-lg font-medium bg-white border border-gray-200 text-sm">
+                <View className="flex flex-row w-full px-8 py-4 items-center justify-between rounded-lg font-medium bg-white border border-gray-200 text-sm">
                     <TextInput
                         className="w-full"
                         placeholder="Titulo"

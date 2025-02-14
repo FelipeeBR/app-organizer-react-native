@@ -120,7 +120,7 @@ export default function AnotacaoEdit ({id}: any) {
                 </KeyboardAvoidingView>
             </SafeAreaView>
             <Text className="text-2xl font-bold mt-6">Titulo</Text>
-            <View className="flex flex-row w-full mt-2 items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 text-sm">
+            <View className="flex flex-row w-full px-8 py-4 mt-2 items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 text-sm">
                 <TextInput
                 className="w-full"
                 placeholder="Titulo"
