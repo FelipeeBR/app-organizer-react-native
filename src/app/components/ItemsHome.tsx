@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, View, Modal, TextInput, Platform, Pressable } f
 import FontAwesome5 from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useEffect, useState } from "react";
-import { format, parse, startOfDay } from 'date-fns';
+import { format, parse, set, startOfDay } from 'date-fns';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useForm } from 'react-hook-form';
@@ -10,27 +10,23 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
-import { fetchNotificacoes, getNotificacoes } from "../notificacao";
-import { useRouter } from "expo-router";
 
 const inputValidation = yup.object().shape({
-  title: yup.string().required('O titulo é obrigatório'),
-  description: yup.string().required('Preencha a descrição'),
+  title: yup.string().required('Titulo é obrigatório'),
+  description: yup.string().required('Descrição é obrigatória'),
   priority: yup.string(),
   status: yup.string(),
   date: yup.date().required('Preencha a data'),
 });
 
 export default function ItemsHome({ atualizarDados}: any) {
-    const [notificacoes, setNotificacoes] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectDisciplina, setSelectDisciplina] = useState();
-    const [selectPriority, setSelectPriority] = useState();
-    const [selectStatus, setSelectStatus] = useState();
+    const [selectPriority, setSelectPriority] = useState("BAIXA");
+    const [selectStatus, setSelectStatus] = useState("PENDING");
     const [disciplinas, setDisciplinas] = useState([]);
     const [showPicker, setShowPicker] = useState(false);
     const [date, setDate] = useState(new Date());
-    const router = useRouter();
 
     const [dateInput, setDateInput] = useState(format(new Date(), "dd/MM/yyyy"));
 
@@ -131,39 +127,9 @@ export default function ItemsHome({ atualizarDados}: any) {
         }
     }
 
-    useEffect(() => {
-        let isMounted = true;
-        const fetchData = async () => {
-            await fetchNotificacoes();
-            const data = await getNotificacoes();
-
-            if (isMounted) {
-                setNotificacoes(data);
-            }
-        };
-        fetchData();
-        const interval = setInterval(() => {
-            fetchData();
-        }, 15000);      // 15 Segundos
-    
-        return () => {
-            isMounted = false;
-            clearInterval(interval);
-        };
-    }, []);
-    
-
     return (
         <View className="w-full flex bg-gray-200 items-end px-4 mb-5 mt-2">
             <View className="flex-row gap-2">
-                <TouchableOpacity onPress={()=> router.push('/perfil/notificacao')} className="w-10 h-10 flex items-center justify-center">
-                    <FontAwesome5 name="bell" size={24} color="#334155" />
-                    {notificacoes.length > 0 && (
-                        <View className="w-5 h-5 rounded-full bg-red-500 absolute top-0 right-0 items-center justify-center">
-                            <Text className="text-white text-xs">{notificacoes.length}</Text>
-                        </View>
-                    )}
-                </TouchableOpacity>
                 <TouchableOpacity onPress={handleOpen} className="w-10 h-10 rounded-full border flex items-center justify-center border-white bg-slate-700">
                     <FontAwesome6 name="plus" size={24} color="white" />
                 </TouchableOpacity>

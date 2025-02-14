@@ -35,7 +35,7 @@ export default function CardAgenda({ info }: any) {
         register("date");
         register("time");
         setDateInput(format(parseISO(date), "dd/MM/yyyy"));
-
+        setValue("description", description);
         const parsedDate = parseISO(date);
         const dateWithAddedHours = addHours(parsedDate, 3);
         setHoraInput(format(dateWithAddedHours, "HH:mm"));
@@ -225,10 +225,10 @@ export default function CardAgenda({ info }: any) {
                             <View>{errors.time && <Text className="text-red-500">{errors.time.message}</Text>}</View>
 
                             <View className="flex-row items-end gap-3">
-                                <TouchableOpacity className="flex h-10 px-6 gap-2 items-center outline-none rounded-md bg-green-500" onPress={handleSubmit(onSubmit)}>
+                                <TouchableOpacity className="flex-row h-10 px-6 gap-2 items-center outline-none rounded-md bg-green-500" onPress={handleSubmit(onSubmit)}>
                                     <Text className="text-white text-lg">Editar</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity className="flex h-10 px-6 gap-2 items-center outline-none rounded-md bg-red-500" onPress={handleCloseModal}>
+                                <TouchableOpacity className="flex-row h-10 px-6 gap-2 items-center outline-none rounded-md bg-red-500" onPress={handleCloseModal}>
                                     <Text className="text-white text-lg">Fechar</Text>
                                 </TouchableOpacity>
                             </View>

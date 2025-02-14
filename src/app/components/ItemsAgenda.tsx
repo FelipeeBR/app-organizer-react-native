@@ -1,5 +1,4 @@
 import { Text, TouchableOpacity, View, Modal, TextInput, Platform, Pressable } from "react-native";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useEffect, useMemo, useState } from "react";
 import { format, parse } from 'date-fns';
@@ -9,7 +8,6 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
-import { fetchNotificacoes, getNotificacoes } from "../notificacao";
 
 const inputValidation = yup.object().shape({
     description: yup.string().required('A descrição é obrigatória').max(30, 'A descrição deve ter no máximo 30 caracteres'),
@@ -18,7 +16,6 @@ const inputValidation = yup.object().shape({
 });
 
 export default function ItemsAgenda() {
-    const [notificacoes, setNotificacoes] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [showPicker, setShowPicker] = useState(false);
     const [showPicker2, setShowPicker2] = useState(false);
@@ -148,38 +145,9 @@ export default function ItemsAgenda() {
         />
     ), [time]);
 
-    useEffect(() => {
-        let isMounted = true;
-        const fetchData = async () => {
-            await fetchNotificacoes();
-            const data = await getNotificacoes();
-
-            if (isMounted) {
-                setNotificacoes(data);
-            }
-
-        };
-        fetchData();
-        const interval = setInterval(() => {
-            fetchData();
-        }, 15000);      // 15 Segundos
-        return () => {
-            isMounted = false;
-            clearInterval(interval);
-        };
-    }, []);
-
     return (
         <View className="w-full flex bg-gray-200 items-end px-4 mb-5 mt-2">
             <View className="flex-row gap-2">
-                <TouchableOpacity className="w-10 h-10 flex items-center justify-center">
-                    <FontAwesome5 name="bell" size={24} color="#334155" />
-                    {notificacoes.length > 0 && (
-                        <View className="w-5 h-5 rounded-full bg-red-500 absolute top-0 right-0 items-center justify-center">
-                            <Text className="text-white text-xs">{notificacoes.length}</Text>
-                        </View>
-                    )}
-                </TouchableOpacity>
                 <TouchableOpacity onPress={handleOpen} className="w-10 h-10 rounded-full border flex items-center justify-center border-white bg-slate-700">
                     <FontAwesome6 name="plus" size={24} color="white" />
                 </TouchableOpacity>
