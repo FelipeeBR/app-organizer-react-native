@@ -25,7 +25,7 @@ export default function AnotacaoDescription() {
         const fetchAnotacao = async () => {
         try {
             const token = await SecureStore.getItemAsync("authToken");
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/anotacao/${id}`, {
+            const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/anotacao/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -49,7 +49,7 @@ export default function AnotacaoDescription() {
         try {
             const description = await editor.getHTML()
             const token = await SecureStore.getItemAsync("authToken");
-            const response = await axios.put(`${process.env.REACT_APP_API_URL}/anotacao/${id}`, {
+            const response = await axios.put(`${process.env.EXPO_PUBLIC_API_URL}/anotacao/${id}`, {
                 title: title,
                 description: description,
             }, {

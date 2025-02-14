@@ -15,7 +15,7 @@ export default function Disciplina() {
     const fetchDisciplinas = async () => {
       try {
         const token = await SecureStore.getItemAsync("authToken");
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/disciplinas`, {
+        const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/disciplinas`, {
           headers: {
             Authorization: `Bearer ${String(token)}`,
           },

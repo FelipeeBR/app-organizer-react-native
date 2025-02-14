@@ -11,7 +11,7 @@ export default function CardAnotacao({ info }: any) {
     const handleDeleteAnotacao = async () => {
         try {
             const token = await SecureStore.getItemAsync("authToken");
-            const response = await axios.delete(`${process.env.REACT_APP_API_URL}/anotacao/${id}`, {
+            const response = await axios.delete(`${process.env.EXPO_PUBLIC_API_URL}/anotacao/${id}`, {
             headers: {
                 Authorization: `Bearer ${String(token)}`,
             },

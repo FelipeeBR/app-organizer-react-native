@@ -16,7 +16,7 @@ export default function DisciplinaTarefa() {
     try {
       const tokenData = await SecureStore.getItemAsync("authToken");
       if(!tokenData)return; 
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/tarefas`, {
+      const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/tarefas`, {
         headers: {
           Authorization: `Bearer ${String(tokenData)}`,
           "Content-Type": "application/json",

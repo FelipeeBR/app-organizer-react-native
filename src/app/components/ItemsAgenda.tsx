@@ -113,7 +113,7 @@ export default function ItemsAgenda() {
         try {
             formatarData();
             const token = await SecureStore.getItemAsync("authToken");
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/agenda`, {
+            const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/agenda`, {
                 ...data,
                 token: String(token),
             }, {

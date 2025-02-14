@@ -3,7 +3,6 @@ import { ActivityIndicator, View } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import '../styles/global.css';
-import { NavigationContainer } from "@react-navigation/native";
 
 export default function Layout() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);

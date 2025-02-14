@@ -1,29 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, TouchableOpacity, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
-import * as Notifications from 'expo-notifications';
 import { getNotificacoes } from "../../notificacao";
 import CardNotificacao from "../../components/CardNotificacao";
-
-async function scheduleLocalNotification(descricao: any, triggerSeconds: any) {
-    await Notifications.scheduleNotificationAsync({
-        content: {
-            title: "Nova Notificação",
-            body: descricao,
-        },
-        trigger: {
-            seconds: triggerSeconds,
-            type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-        },
-    });
-}
-
-/*function calculateTriggerSeconds(dataEnvio: any) {
-    const dataNotificacao = new Date(dataEnvio); 
-    const dataAtual = new Date(); 
-    const diferencaSegundos = Math.floor((dataNotificacao - dataAtual) / 1000);
-    return diferencaSegundos > 0 ? diferencaSegundos : 1;
-}*/
 
 export default function Notificacao() {
     const router = useRouter();
@@ -36,7 +15,6 @@ export default function Notificacao() {
                 const data = await getNotificacoes();
                 if(isMounted) {
                     setNotificacoes(data);
-                    console.log(data);
                 }
             } catch (error) {
             }

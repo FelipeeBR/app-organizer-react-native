@@ -66,7 +66,7 @@ export default function CardTarefa({ tarefa }: any) {
           try {
             const token = await SecureStore.getItemAsync("authToken");
             if(token) {
-              const response = await axios.get(`${process.env.REACT_APP_API_URL}/disciplinas`, {
+              const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/disciplinas`, {
                 headers: {
                   Authorization: `Bearer ${token}`,
                 },
@@ -171,7 +171,7 @@ export default function CardTarefa({ tarefa }: any) {
             return;
           }
     
-          const response = await axios.put(`${process.env.REACT_APP_API_URL}/tarefa/${id}`, {
+          const response = await axios.put(`${process.env.EXPO_PUBLIC_API_URL}/tarefa/${id}`, {
             ...data,
             date: dataISO,
             priority: selectPriority,

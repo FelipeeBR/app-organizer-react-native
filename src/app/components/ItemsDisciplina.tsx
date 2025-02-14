@@ -43,7 +43,7 @@ export default function ItemsDisciplina() {
     const onSubmit = async (data: any) => {
         try {
             const token = await SecureStore.getItemAsync("authToken");
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/disciplina`, {...data, token: String(token)}, {
+            const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/disciplina`, {...data, token: String(token)}, {
                 headers: {
                     Authorization: `Bearer ${String(token)}`,
                 },

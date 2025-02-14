@@ -16,7 +16,10 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["NOTIFICATIONS"]
+      "permissions": [
+        "NOTIFICATIONS"
+      ],
+      "package": "com.felipemen74.OrganizerApp"
     },
     "web": {
       "bundler": "metro",
@@ -38,6 +41,14 @@
     ],
     "experiments": {
       "typedRoutes": false
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "60c09181-e408-4941-9da0-250120992f5c"
+      }
     }
   }
 }

@@ -39,7 +39,7 @@ export default function AnotacaoCreate () {
         try {
             const description = await editor.getHTML()
             const token = await SecureStore.getItemAsync("authToken");
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/anotacao`, {
+            const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/anotacao`, {
                 title: data.title,
                 description: description,
                 token: token

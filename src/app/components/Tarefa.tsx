@@ -10,7 +10,6 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
-import ToastManager, { Toast } from "toastify-react-native";
 
 
 const getTaskStatusDetails = (task: any) => {
@@ -107,7 +106,7 @@ export default function Tarefa({ task, atualizarDados }: any) {
         return;
       }
   
-      const response = await axios.put(`${process.env.REACT_APP_API_URL}/tarefa/${task.id}`, {
+      const response = await axios.put(`${process.env.EXPO_PUBLIC_API_URL}/tarefa/${task.id}`, {
         ...data,
         date: dataISO,
         priority: selectPriority,
@@ -123,7 +122,6 @@ export default function Tarefa({ task, atualizarDados }: any) {
       if (response.status === 200) {
         atualizarDados();
       } else {
-        Toast.error("Erro ao atualizar tarefa!");
         console.error("Erro ao atualizar tarefa:", response.data);
       }
   
@@ -169,7 +167,7 @@ export default function Tarefa({ task, atualizarDados }: any) {
       try {
         const token = await SecureStore.getItemAsync("authToken");
         if(token) {
-          const response = await axios.get(`${process.env.REACT_APP_API_URL}/disciplinas`, {
+          const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/disciplinas`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -191,7 +189,7 @@ export default function Tarefa({ task, atualizarDados }: any) {
         return;
       }
 
-      const response = await axios.delete(`${process.env.REACT_APP_API_URL}/tarefa/${id}`, {
+      const response = await axios.delete(`${process.env.EXPO_PUBLIC_API_URL}/tarefa/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -199,7 +197,6 @@ export default function Tarefa({ task, atualizarDados }: any) {
       if (response.status === 200) {
         atualizarDados();
       } else {
-        Toast.error("Erro ao deletar tarefa!");
         console.error("Erro ao deletar tarefa:", response.data);
       }
     } catch (error) {

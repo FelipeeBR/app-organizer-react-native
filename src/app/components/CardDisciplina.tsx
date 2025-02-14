@@ -43,7 +43,7 @@ export default function CardDisciplina({ disciplina }: any) {
     const handleDeleteDisciplina = async () => {
         try {
             const token = await SecureStore.getItemAsync("authToken");
-            const response = await axios.delete(`${process.env.REACT_APP_API_URL}/disciplina/${id}`, {
+            const response = await axios.delete(`${process.env.EXPO_PUBLIC_API_URL}/disciplina/${id}`, {
                 headers: {
                     Authorization: `Bearer ${String(token)}`,
                 },
@@ -58,7 +58,7 @@ export default function CardDisciplina({ disciplina }: any) {
     const onSubmit = async (data: any) => {
         try {
             const token = await SecureStore.getItemAsync("authToken");
-            const response = await axios.put(`${process.env.REACT_APP_API_URL}/disciplina/${id}`, {...data, token: String(token)}, {
+            const response = await axios.put(`${process.env.EXPO_PUBLIC_API_URL}/disciplina/${id}`, {...data, token: String(token)}, {
                 headers: {
                     Authorization: `Bearer ${String(token)}`,
                 },

@@ -15,7 +15,7 @@ export default function Anotacao() {
     const fetchAnotacoes = async () => {
       try {
         const token = await SecureStore.getItemAsync("authToken");
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/anotacoes`, {
+        const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/anotacoes`, {
           headers: {
             Authorization: `Bearer ${String(token)}`,
           },

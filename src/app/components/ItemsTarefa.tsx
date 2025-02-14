@@ -71,7 +71,7 @@ export default function ItemsTarefa({ atualizarTarefas }: any) {
           try {
             const token = await SecureStore.getItemAsync("authToken");
             if (token) {
-              const response = await axios.get(`${process.env.REACT_APP_API_URL}/disciplinas`, {
+              const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/disciplinas`, {
                 headers: {
                   Authorization: `Bearer ${token}`,
                 },
@@ -105,7 +105,7 @@ export default function ItemsTarefa({ atualizarTarefas }: any) {
               return;
             }
     
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/tarefa`, {
+            const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/tarefa`, {
                 ...data,
                 date: dataISO,
                 priority: selectPriority,

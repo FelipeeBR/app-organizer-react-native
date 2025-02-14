@@ -137,7 +137,7 @@ export default function CardAgenda({ info }: any) {
             const dataHora = formatarData(dateInput, horaInput);
             if (!dataHora) return;
             const token = await SecureStore.getItemAsync("authToken");
-            const response = await axios.put(`${process.env.REACT_APP_API_URL}/agenda/${id}`, {
+            const response = await axios.put(`${process.env.EXPO_PUBLIC_API_URL}/agenda/${id}`, {
                 ...data,
                 date: dataHora,
                 token: String(token),
@@ -157,7 +157,7 @@ export default function CardAgenda({ info }: any) {
     const handleDeleteAgenda = async (id: number) => {
         try {
             const token = await SecureStore.getItemAsync("authToken");
-            const response = await axios.delete(`${process.env.REACT_APP_API_URL}/agenda/${id}`, {
+            const response = await axios.delete(`${process.env.EXPO_PUBLIC_API_URL}/agenda/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",

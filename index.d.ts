@@ -1,2 +1,2 @@
 declare module 'react-native-dnd-board';
-declare module 'react-native-draganddrop-board';
+declare module '@felipemen74/react-native-draganddrop-board';

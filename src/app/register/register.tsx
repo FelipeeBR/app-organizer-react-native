@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import axios from "axios";
-import ToastManager, { Toast } from "toastify-react-native";
 
 const inputValidation = yup.object().shape({
   email: yup.string().email('E-mail inválido').required('E-mail é obrigatório'),
@@ -46,13 +45,11 @@ export default function Register() {
         try {
             setLoading(true);
             const response = await axios.post(
-              `${process.env.REACT_APP_API_URL}/users/register`, data);
+              `${process.env.EXPO_PUBLIC_API_URL}/users/register`, data);
       
             if(response.status === 201) {
-                Toast.success("Conta criada com sucesso!");
                 router.replace("/login"); 
             } else {
-                Toast.success("Credenciais Inválidas!");
                 setLoading(false);
             }
           }catch(error: any) {
@@ -63,7 +60,6 @@ export default function Register() {
 
     return (
         <View className="flex-1 items-center justify-center m-5">
-            <ToastManager />
             <View>
                 <Text className="text-3xl font-bold">Cadastre-se</Text>
             </View>

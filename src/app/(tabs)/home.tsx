@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { BoardRepository } from 'react-native-draganddrop-board';
-import { Board } from 'react-native-draganddrop-board';
+import { BoardRepository } from '@felipemen74/react-native-draganddrop-board';
+import { Board } from '@felipemen74/react-native-draganddrop-board';
 import axios from 'axios';
 import * as SecureStore from "expo-secure-store";
 import Tarefa from "../components/Tarefa";
@@ -45,7 +45,7 @@ export default function Home() {
                     console.error('Token não encontrado');
                     return;
                 }
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/tarefasUser`, {
+                const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/tarefasUser`, {
                     headers: {
                         Authorization: `Bearer ${String(tokenData)}`,
                         "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export default function Home() {
             return;
         }
         try {
-            const response = await axios.put(`${process.env.REACT_APP_API_URL}/tarefa/${id}`, {
+            const response = await axios.put(`${process.env.EXPO_PUBLIC_API_URL}/tarefa/${id}`, {
                 ...tarefa
             }, {
                 headers: {
@@ -137,7 +137,7 @@ export default function Home() {
                 console.error('Token não encontrado');
                 return;
             }
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/tarefasUser`, {
+            const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/tarefasUser`, {
                 headers: {
                     Authorization: `Bearer ${String(tokenData)}`,
                     "Content-Type": "application/json",
