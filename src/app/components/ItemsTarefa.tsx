@@ -21,8 +21,8 @@ const inputValidation = yup.object().shape({
 export default function ItemsTarefa({ atualizarTarefas }: any) {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectDisciplina, setSelectDisciplina] = useState();
-    const [selectPriority, setSelectPriority] = useState();
-    const [selectStatus, setSelectStatus] = useState();
+    const [selectPriority, setSelectPriority] = useState("BAIXA");
+    const [selectStatus, setSelectStatus] = useState("PENDING");
     const [disciplinas, setDisciplinas] = useState([]);
     const [showPicker, setShowPicker] = useState(false);
     const [date, setDate] = useState(new Date());
@@ -74,6 +74,7 @@ export default function ItemsTarefa({ atualizarTarefas }: any) {
                 },
               });
               setDisciplinas(response.data);
+              setSelectDisciplina(response.data[0].id);
             }
           } catch (error) {
             console.error("Erro ao buscar disciplinas:", error);
