@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, ActivityIndicator } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import axios from 'axios';
@@ -10,7 +10,8 @@ import ItemsTarefa from "../../components/ItemsTarefa";
 export default function DisciplinaTarefa() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
-  const [listTarefas, setListTarefas] = useState([]);
+  const [listTarefas, setListTarefas] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchTarefas = async () => {
     try {
@@ -24,6 +25,7 @@ export default function DisciplinaTarefa() {
         params: { id: id },
       });
       setListTarefas(response.data);
+      setLoading(false);
     } catch(error: any) {
       console.error('Erro ao buscar tarefas:', error.response.data);
     }
@@ -37,9 +39,17 @@ export default function DisciplinaTarefa() {
     <View className="bg-gray-200">
       <ItemsTarefa atualizarTarefas={fetchTarefas} />
       <ScrollView className="flex-1 p-4 min-h-[80vh] bg-gray-200" contentContainerStyle={{ paddingBottom: 50 }}>
-        {listTarefas.map((tarefa: any) => (
-          <CardTarefa key={tarefa.id} tarefa={tarefa} />
-        ))}
+        {loading ? (
+          <View className="flex-1 items-center justify-center">
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        ) : listTarefas && listTarefas.length > 0 ? (
+          listTarefas.map((tarefa: any) => <CardTarefa key={tarefa.id} tarefa={tarefa} />)
+        ) : (
+          <View className="flex-1 items-center justify-center">
+            <ActivityIndicator size="small" color="#ff0000" /> 
+          </View>
+        )}
       </ScrollView>
     </View>
   );

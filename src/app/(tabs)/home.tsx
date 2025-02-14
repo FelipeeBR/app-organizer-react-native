@@ -152,8 +152,8 @@ export default function Home() {
     const handleOpen = (item:any) => {
         setSelectedItem(item);
         Alert.alert(item.title, item.description, [
-            {text: 'OK', onPress: () => console.log('OK Pressed')},
-          ]);
+            { text: 'OK' },
+        ]);
     };
     
     return (

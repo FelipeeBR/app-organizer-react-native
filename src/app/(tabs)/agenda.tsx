@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import * as SecureStore from "expo-secure-store";
 import CardAgenda from '../components/CardAgenda';
@@ -27,8 +27,9 @@ LocaleConfig.defaultLocale = 'pt';
 
 export default function Agenda() {
     const [selected, setSelected] = useState('');
-    const [agendas, setAgendas] = useState([]);
+    const [agendas, setAgendas] = useState<any[]>([]);
     const [markedDates, setMarkedDates] = useState({});
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchAgendas = async () => {
@@ -40,6 +41,7 @@ export default function Agenda() {
               },
             });
             setAgendas(response.data);
+            setLoading(false);
             const formattedDates = response.data.reduce((acc: any, agenda: any) => {
                 const date = agenda.date.split('T')[0]; 
                 acc[date] = { marked: true, dotColor: 'red' }; 
@@ -65,13 +67,21 @@ export default function Agenda() {
                 }}
                 markedDates={{
                     ...markedDates,
-                    [selected]: { selected: true, disableTouchEvent: true, selectedDotColor: 'blue', selectedColor: 'blue', dotColor: 'white', marked: true },
+                    [selected]: { selected: true, disableTouchEvent: true, selectedDotColor: 'blue', selectedColor: 'blue', dotColor: 'blue', marked: true },
                 }}
             />
             <ScrollView className="flex-1 p-4 min-h-[90%] bg-gray-200" contentContainerStyle={{ paddingBottom: 50 }}>
-                {agendas.map((agenda: any) => (
-                    <CardAgenda key={agenda.id} info={agenda} />
-                ))}
+                {loading ? (
+                    <View className="flex-1 items-center justify-center">
+                    <ActivityIndicator size="large" color="#0000ff" />
+                    </View>
+                ) : agendas && agendas.length > 0 ? (
+                    agendas.map((agenda: any) => <CardAgenda key={agenda.id} info={agenda} />)
+                ) : (
+                    <View className="flex-1 items-center justify-center">
+                    <ActivityIndicator size="small" color="#ff0000" /> 
+                    </View>
+                )}
             </ScrollView>
         </View>
     );
