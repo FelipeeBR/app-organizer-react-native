@@ -179,8 +179,6 @@ export default function CardAgenda({ info }: any) {
                 },
             });
             handleCloseModal();
-            console.log(data);
-            console.log(response.data);
             return response.data;
         } catch (error) {
             console.error('Erro ao atualizar agenda:', error);
