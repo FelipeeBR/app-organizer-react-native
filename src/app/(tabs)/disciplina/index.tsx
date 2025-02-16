@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, ActivityIndicator } from "react-native";
+import { View, ScrollView, ActivityIndicator, Text } from "react-native";
 import axios from 'axios';
 import * as SecureStore from "expo-secure-store";
 import CardDisciplina from "../../components/CardDisciplina";
@@ -22,7 +22,8 @@ export default function Disciplina() {
         setDisciplinas(response.data);
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        setLoading(false);
+        return;
       }
     }
     fetchDisciplinas();
@@ -40,7 +41,7 @@ export default function Disciplina() {
           disciplinas.map((disciplina: any) => <CardDisciplina key={disciplina.id} disciplina={disciplina} />)
         ) : (
           <View className="flex-1 items-center justify-center">
-            <ActivityIndicator size="small" color="#ff0000" /> 
+            <Text className="text-gray-500 text-lg">Nenhuma disciplina encontrada</Text> 
           </View>
         )}
       </ScrollView>

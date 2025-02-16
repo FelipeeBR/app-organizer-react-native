@@ -221,8 +221,8 @@ export default function CardTarefa({ tarefa }: any) {
                 </View>
             </View>
             <View className="flex-grow">
-                <Text className="text-lg font-bold text-gray-800 mb-2">{title}</Text>
-                <Text className="text-sm text-gray-600">{description}</Text>
+                <Text numberOfLines={1} ellipsizeMode="tail" style={{ width: 200, fontSize: 16 }} className="text-lg font-bold text-gray-800 mb-2">{title}</Text>
+                <Text numberOfLines={1} ellipsizeMode="tail" style={{ width: 200, fontSize: 16 }} className="text-sm text-gray-600">{description}</Text>
             </View>
             <View className="flex items-start">
                 <View className="mt-4 flex-row gap-2 sm:mt-auto">

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   View,
+  Text,
   ScrollView,
   ActivityIndicator
 } from 'react-native';
@@ -25,7 +26,8 @@ export default function Anotacao() {
         setAnotacoes(response.data);
         setLoading(false);
       } catch (error) {
-        console.error('Erro ao buscar anotações:', error);
+        setLoading(false);
+        return;
       }
     };
     fetchAnotacoes();
@@ -43,7 +45,7 @@ export default function Anotacao() {
         anotacoes.map((anotacao: any) => <CardAnotacao key={anotacao.id} info={anotacao} />)
       ) : (
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="small" color="#ff0000" /> 
+          <Text className="text-gray-500 text-lg">Nenhuma anotação encontrada</Text> 
         </View>
       )}
       </ScrollView>

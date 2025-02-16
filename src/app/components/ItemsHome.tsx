@@ -12,18 +12,18 @@ import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
 const inputValidation = yup.object().shape({
-  title: yup.string().required('Titulo é obrigatório'),
-  description: yup.string().required('Descrição é obrigatória'),
-  priority: yup.string(),
-  status: yup.string(),
-  date: yup.date().required('Preencha a data'),
+    title: yup.string().required('Titulo é obrigatório'),
+    description: yup.string().required('Descrição é obrigatória'),
+    priority: yup.string().required('Escolha a prioridade'),
+    status: yup.string().required('Escolha o status'),
+    date: yup.date().required('Escolha a data'),
 });
 
 export default function ItemsHome({ atualizarDados}: any) {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectDisciplina, setSelectDisciplina] = useState();
-    const [selectPriority, setSelectPriority] = useState("BAIXA");
-    const [selectStatus, setSelectStatus] = useState("PENDING");
+    const [selectPriority, setSelectPriority] = useState();
+    const [selectStatus, setSelectStatus] = useState();
     const [disciplinas, setDisciplinas] = useState([]);
     const [showPicker, setShowPicker] = useState(false);
     const [date, setDate] = useState(new Date());
@@ -95,8 +95,6 @@ export default function ItemsHome({ atualizarDados}: any) {
             const dataISO = format(dataInicioDoDia, "yyyy-MM-dd'T'HH:mm:ss");
         
             setValue('date', dataInicioDoDia);
-            setValue('priority', selectPriority);
-            setValue('status', selectStatus);
     
             const token = await SecureStore.getItemAsync("authToken");
             if (!token) {
@@ -183,24 +181,34 @@ export default function ItemsHome({ atualizarDados}: any) {
                             <Text>Prioridade</Text>
                             <Picker
                                 selectedValue={selectPriority}
-                                onValueChange={(itemValue, itemIndex) =>
-                                setSelectPriority(itemValue)
-                                }>
+                                onValueChange={(itemValue) => {
+                                    const value = itemValue || 'BAIXA';
+                                    setSelectPriority(itemValue); 
+                                    setValue('priority', value); 
+                                }}>
                                 <Picker.Item label="Baixa" value="BAIXA" />
                                 <Picker.Item label="Média" value="MEDIA" />
                                 <Picker.Item label="Alta" value="ALTA" />
                             </Picker>
+                            <View>
+                                {errors.priority && <Text className="text-red-500">{errors.priority.message}</Text>}
+                            </View>
 
                             <Text>Status</Text>
                             <Picker
                                 selectedValue={selectStatus}
-                                onValueChange={(itemValue, itemIndex) =>
-                                setSelectStatus(itemValue)
-                                }>
+                                onValueChange={(itemValue) => {
+                                    const value = itemValue || 'PENDING';
+                                    setSelectStatus(itemValue); 
+                                    setValue('status', value); 
+                                }}>
                                 <Picker.Item label="Pendente" value="PENDING" />
                                 <Picker.Item label="Fazendo" value="IN_PROGRESS" />
                                 <Picker.Item label="Concluída" value="COMPLETED" />
                             </Picker>
+                            <View>
+                                {errors.status && <Text className="text-red-500">{errors.status.message}</Text>}
+                            </View>
                             
                             <Text>Prazo</Text>
                             {showPicker && (

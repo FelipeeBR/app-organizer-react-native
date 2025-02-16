@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { getNotificacoes } from '../notificacao';
 
 export default function TabLayout() {
-    const [notificacoes, setNotificacoes] = useState([]);
+    const [notificacoes, setNotificacoes] = useState<any[]>([]);
 
     useEffect(() => {
         let isMounted = true;
@@ -71,7 +71,7 @@ export default function TabLayout() {
                 options={{
                     title: 'Notificacões',
                     tabBarIcon: ({ color }) => <FontAwesome size={28} name="bell" color={color} />,
-                    tabBarBadge: notificacoes.length > 0 ? notificacoes.length : undefined,
+                    tabBarBadge: notificacoes?.length > 0 ? notificacoes?.length : undefined,
                 }}
             />
         </Tabs> 

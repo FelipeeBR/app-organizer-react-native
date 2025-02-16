@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { View, ScrollView, ActivityIndicator } from "react-native";
+import { View, ScrollView, ActivityIndicator, Text } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import axios from 'axios';
@@ -27,7 +27,8 @@ export default function DisciplinaTarefa() {
       setListTarefas(response.data);
       setLoading(false);
     } catch(error: any) {
-      console.error('Erro ao buscar tarefas:', error.response.data);
+      setLoading(false);
+      return;
     }
   }
 
@@ -47,7 +48,7 @@ export default function DisciplinaTarefa() {
           listTarefas.map((tarefa: any) => <CardTarefa key={tarefa.id} tarefa={tarefa} />)
         ) : (
           <View className="flex-1 items-center justify-center">
-            <ActivityIndicator size="small" color="#ff0000" /> 
+            <Text className="text-gray-500 text-lg">Nenhuma tarefa encontrada</Text>
           </View>
         )}
       </ScrollView>

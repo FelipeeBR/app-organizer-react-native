@@ -79,8 +79,8 @@ export default function CardDisciplina({ disciplina }: any) {
                     <FontAwesome5 name="book-open" size={24} color="blue" />
                 </View>
                 <View className="flex flex-col flex-grow">
-                    <Text className="text-lg font-semibold text-gray-800">{name}</Text>
-                    <Text className="text-sm text-gray-600 mt-1">{details}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={{ width: 200, fontSize: 16 }} className="text-lg font-semibold text-gray-800">{name}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={{ width: 200, fontSize: 16 }} className="text-sm text-gray-600 mt-1">{details}</Text>
                 </View>
             </Pressable>
             <View className="flex items-start">

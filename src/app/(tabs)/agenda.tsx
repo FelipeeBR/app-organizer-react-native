@@ -50,7 +50,8 @@ export default function Agenda() {
 
             setMarkedDates(formattedDates);
           } catch (error) {
-            console.error('Erro ao buscar agendas:', error);
+            setLoading(false);
+            return;
           }
         };
         fetchAgendas();
@@ -73,13 +74,13 @@ export default function Agenda() {
             <ScrollView className="flex-1 p-4 min-h-[90%] bg-gray-200" contentContainerStyle={{ paddingBottom: 50 }}>
                 {loading ? (
                     <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator size="large" color="#0000ff" />
+                        <ActivityIndicator size="large" color="#0000ff" />
                     </View>
                 ) : agendas && agendas.length > 0 ? (
                     agendas.map((agenda: any) => <CardAgenda key={agenda.id} info={agenda} />)
                 ) : (
                     <View className="flex-1 items-center justify-center">
-                    <ActivityIndicator size="small" color="#ff0000" /> 
+                        <Text className="text-gray-500 text-lg">Nenhuma agenda encontrada</Text> 
                     </View>
                 )}
             </ScrollView>
