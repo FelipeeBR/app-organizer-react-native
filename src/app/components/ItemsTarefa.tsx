@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, View, Modal, TextInput, Platform, Pressable } from "react-native";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useEffect, useMemo, useState } from "react";
-import { format, parse, formatISO, startOfDay, set } from 'date-fns';
+import { format, parse, startOfDay } from 'date-fns';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useForm } from 'react-hook-form';

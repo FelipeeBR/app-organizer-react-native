@@ -8,11 +8,13 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import { Picker } from '@react-native-picker/picker';
 
 const inputValidation = yup.object().shape({
     description: yup.string().required('A descrição é obrigatória').max(30, 'A descrição deve ter no máximo 30 caracteres'),
     date: yup.date().required('Preencha a data'),
     time: yup.date().required('Preencha a hora'),
+    tipo: yup.string().required('Escolha o tipo'),
 });
 
 export default function ItemsAgenda() {
@@ -23,6 +25,7 @@ export default function ItemsAgenda() {
     const [time, setTime] = useState<Date | null>(null);
     const [dateInput, setDateInput] = useState("");
     const [horaInput, setHoraInput] = useState("");
+    const [selectTipo, setSelectTipo] = useState();
 
     const { register, handleSubmit, setValue, formState: { errors } } = useForm({
         resolver: yupResolver(inputValidation)
@@ -32,6 +35,7 @@ export default function ItemsAgenda() {
         register("description");
         register("date");
         register("time");
+        register("tipo");
     }, [register]);
 
     const handleOpen = () => {
@@ -120,7 +124,6 @@ export default function ItemsAgenda() {
             });
             if(response.status === 201) {
                 setModalVisible(false);
-                console.log(response.data);
             }
         } catch (error) {
             console.error("Erro ao criar agenda:", error);
@@ -162,6 +165,22 @@ export default function ItemsAgenda() {
                                 <TextInput className="w-full" placeholder="Descrição" placeholderTextColor="gray" onChangeText={text => setValue("description", text)} />
                             </View>
                             <View>{errors.description && <Text className="text-red-500">{errors.description.message}</Text>}</View>
+
+                            <Text>Tipo</Text>
+                            <Picker
+                                selectedValue={selectTipo}
+                                onValueChange={(itemValue) => {
+                                    const value = itemValue || "TRABALHO";
+                                    setSelectTipo(itemValue); 
+                                    setValue('tipo', value); 
+                                }}>
+                                <Picker.Item label="Trabalho" value="TRABALHO" />
+                                <Picker.Item label="Prova" value="PROVA" />
+                                <Picker.Item label="Evento" value="EVENTO" />
+                            </Picker>
+                            <View>
+                                {errors.tipo && <Text className="text-red-500">{errors.tipo.message}</Text>}
+                            </View>
 
                             <Text>Data</Text>
                             {showPicker && memoData}

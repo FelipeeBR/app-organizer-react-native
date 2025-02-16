@@ -6,26 +6,34 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import { Picker } from '@react-native-picker/picker';
 
 const inputValidation = yup.object().shape({
   title: yup.string().required('Titulo é obrigatório'),
   content: yup.string().required('Descrição é obrigatória'),
+  obrigatoria: yup.string().required('Escolha o tipo'),
+  dependencia: yup.string().required('Escolha uma opção'),
 });
 export default function ItemsDisciplina() {
     const [modalVisible, setModalVisible] = useState(false);
+    const [selectTipo, setSelectTipo] = useState();
+    const [selectDependencia, setSelectDependencia] = useState();
 
     const { register, handleSubmit, setValue, control, formState: { errors },} = useForm({
         resolver: yupResolver(inputValidation),
         defaultValues: {
             title: '',
-            content: ''
+            content: '',
+            obrigatoria: '',
+            dependencia: '',
         }
-    
     });
     
     useEffect(() => {
         register('title');
         register('content');
+        register('obrigatoria');
+        register('dependencia');
     },[register]);
     
     const handleOpen = () => {
@@ -37,7 +45,7 @@ export default function ItemsDisciplina() {
     };
 
     const onSubmit = async (data: any) => {
-        try {
+       try {
             const token = await SecureStore.getItemAsync("authToken");
             const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/disciplina`, {...data, token: String(token)}, {
                 headers: {
@@ -89,7 +97,7 @@ export default function ItemsDisciplina() {
                                 {errors.title && <Text className="text-red-500">{errors.title.message}</Text>}
                             </View>
         
-                            <View className="flex flex-row w-full px-8 py-4 items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white">
+                            <View className="flex flex-row w-full px-8 py-4 items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm">
                                 <TextInput
                                     className="w-full"
                                     placeholder="Descrição"
@@ -99,6 +107,36 @@ export default function ItemsDisciplina() {
                                 </View>
                             <View>
                                 {errors.content && <Text className="text-red-500">{errors.content.message}</Text>}
+                            </View>
+
+                            <Text>Tipo</Text>
+                            <Picker
+                                selectedValue={selectTipo}
+                                onValueChange={(itemValue) => {
+                                    const value = itemValue || "1";
+                                    setSelectTipo(itemValue); 
+                                    setValue('obrigatoria', value); 
+                                }}>
+                                <Picker.Item label="Obrigatória" value="1" />
+                                <Picker.Item label="Optativa" value="0" />
+                            </Picker>
+                            <View>
+                                {errors.obrigatoria && <Text className="text-red-500">{errors.obrigatoria.message}</Text>}
+                            </View>
+
+                            <Text>Depêndencia</Text>
+                            <Picker
+                                selectedValue={selectDependencia}
+                                onValueChange={(itemValue) => {
+                                    const value = itemValue || "1";
+                                    setSelectDependencia(itemValue); 
+                                    setValue('dependencia', value); 
+                                }}>
+                                <Picker.Item label="Sim" value="1" />
+                                <Picker.Item label="Não" value="0" />
+                            </Picker>
+                            <View>
+                                {errors.dependencia && <Text className="text-red-500">{errors.dependencia.message}</Text>}
                             </View>
                         </View>
                         <View className="flex-row items-end gap-3">

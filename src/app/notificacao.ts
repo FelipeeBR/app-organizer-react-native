@@ -102,4 +102,4 @@ async function fetchAndScheduleNotifications() {
   }
 }*/
 
-export { fetchNotificacoes, getNotificacoes };
+export default [fetchNotificacoes, getNotificacoes] ;

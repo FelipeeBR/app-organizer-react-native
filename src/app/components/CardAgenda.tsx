@@ -9,15 +9,44 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import { Picker } from '@react-native-picker/picker';
+
+const getTipo = (tipo: any) => {
+    switch (tipo) {
+        case 'TRABALHO':
+        return <View><Text className='flex items-center gap-2 text-white'>Trabalho</Text></View>; 
+        case 'PROVA':
+        return <View><Text className='flex items-center gap-2 text-white'>Prova</Text></View>; 
+        case 'EVENTO':
+        return <View><Text className='flex items-center gap-2 text-white'>Evento</Text></View>; 
+        default:
+        return <View><Text className='flex items-center gap-2 text-white'>Evento</Text></View>;
+    }
+};
+
+const getColor = (tipo: any) => {
+    switch (tipo) {
+      case 'TRABALHO':
+        return 'bg-green-500'; 
+      case 'PROVA':
+        return 'bg-red-500'; 
+      case 'EVENTO':
+        return 'bg-blue-500'; 
+      default:
+        return 'bg-gray-500';
+    }
+};
+
 
 const inputValidation = yup.object().shape({
     description: yup.string().required('A descrição é obrigatória').max(30, 'A descrição deve ter no máximo 30 caracteres'),
     date: yup.date(),
     time: yup.date(),
+    tipo: yup.string().required('Escolha o tipo'),
 });
 
 export default function CardAgenda({ info }: any) {
-    const { id, description, date } = info;
+    const { id, description, date, tipo } = info;
     const [modalVisible, setModalVisible] = useState(false);
     const [showPicker, setShowPicker] = useState(false);
     const [showPicker2, setShowPicker2] = useState(false);
@@ -25,6 +54,7 @@ export default function CardAgenda({ info }: any) {
     const [time, setTime] = useState<Date | null>(null);
     const [dateInput, setDateInput] = useState("");
     const [horaInput, setHoraInput] = useState("");
+    const [selectTipo, setSelectTipo] = useState(tipo);
 
     const { register, handleSubmit, setValue, formState: { errors } } = useForm({
         resolver: yupResolver(inputValidation)
@@ -34,6 +64,7 @@ export default function CardAgenda({ info }: any) {
         register("description");
         register("date");
         register("time");
+        register("tipo");
         setDateInput(format(parseISO(date), "dd/MM/yyyy"));
         setValue("description", description);
         const parsedDate = parseISO(date);
@@ -148,6 +179,8 @@ export default function CardAgenda({ info }: any) {
                 },
             });
             handleCloseModal();
+            console.log(data);
+            console.log(response.data);
             return response.data;
         } catch (error) {
             console.error('Erro ao atualizar agenda:', error);
@@ -174,7 +207,10 @@ export default function CardAgenda({ info }: any) {
 
     return (
         <View className='bg-white rounded-lg shadow-md flex flex-col justify-between relative p-4 mb-2'>
-            <View className="flex flex-col flex-grow">
+            <View className="flex-row gap-2">
+                <Text className={`flex items-center justify-center text-white ${getColor(tipo)} rounded-lg px-2 font-semibold`}>
+                    {getTipo(tipo)}
+                </Text>
                 <Text className="text-sm font-semibold text-gray-800 italic">
                     {format(addHours(new Date(date), 3), "dd/MM/yyyy 'às' HH:mm")}
                 </Text>
@@ -203,6 +239,22 @@ export default function CardAgenda({ info }: any) {
                                 <TextInput className="w-full" placeholder="Descrição" placeholderTextColor="gray" onChangeText={text => setValue("description", text)} defaultValue={description}/>
                             </View>
                             <View>{errors.description && <Text className="text-red-500">{errors.description.message}</Text>}</View>
+
+                            <Text>Tipo</Text>
+                            <Picker
+                                selectedValue={selectTipo}
+                                onValueChange={(itemValue) => {
+                                    const value = itemValue || "TRABALHO";
+                                    setSelectTipo(itemValue); 
+                                    setValue('tipo', value); 
+                                }}>
+                                <Picker.Item label="Trabalho" value="TRABALHO" />
+                                <Picker.Item label="Prova" value="PROVA" />
+                                <Picker.Item label="Evento" value="EVENTO" />
+                            </Picker>
+                            <View>
+                                {errors.tipo && <Text className="text-red-500">{errors.tipo.message}</Text>}
+                            </View>
 
                             <Text>Data</Text>
                             {showPicker && memoData}
