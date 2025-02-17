@@ -1,6 +1,5 @@
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
-import * as Notifications from 'expo-notifications';
 
 async function fetchNotificacoes()  {
     try {

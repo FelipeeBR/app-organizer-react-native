@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, ScrollView, ActivityIndicator } from "react-native";
-import getNotificacoes from "../notificacao";
 import CardNotificacao from "../components/CardNotificacao";
+import axios from "axios";
+import * as SecureStore from "expo-secure-store";
 
 export default function Notificacao() {
     const [notificacoes, setNotificacoes] = useState<any[]>([]);
@@ -9,21 +10,31 @@ export default function Notificacao() {
 
     useEffect(() => {
         let isMounted = true;
-        const fetchData = async () => {
+        const fetchNotificacoes = async () => {
             try {
-                const data = await getNotificacoes[0]();
+                const token = await SecureStore.getItemAsync("authToken");
+                const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/notificacoes`, {
+                    headers: {
+                        Authorization: `Bearer ${String(token)}`,
+                    },
+                });
                 if(isMounted) {
-                    setNotificacoes(data);
+                    setNotificacoes(response.data);
                     setLoading(false);
                 }
+                return response.data;
             } catch (error) {
             }
-        };
-        fetchData();
+        }
+        fetchNotificacoes();
         return () => {
             isMounted = false;
         };
     }, []);
+
+    const handleUpdateNotificacao = (idAtualizado: number) => {
+        setNotificacoes(prev => prev.filter(n => n.id !== idAtualizado));
+    };
 
     return (
         <View className="flex bg-gray-100 h-full">
@@ -33,7 +44,7 @@ export default function Notificacao() {
                         <ActivityIndicator size="large" color="#0000ff" />
                     </View>
                 ) : notificacoes && notificacoes.length > 0 ? (
-                    notificacoes.map((notificacao: any) => <CardNotificacao key={notificacao.id} info={notificacao} />)
+                    notificacoes.map((notificacao: any) => <CardNotificacao key={notificacao.id} info={notificacao} onUpdate={handleUpdateNotificacao} />)
                 ) : (
                     <View className="flex-1 items-center justify-center">
                         <Text className="text-gray-500 text-lg">Nenhuma notificação encontrada</Text>
