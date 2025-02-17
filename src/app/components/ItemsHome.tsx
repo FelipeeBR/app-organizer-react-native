@@ -10,6 +10,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import useTarefaStore from "../useTarefaStore";
 
 const inputValidation = yup.object().shape({
     title: yup.string().required('Titulo é obrigatório'),
@@ -27,6 +28,8 @@ export default function ItemsHome({ atualizarDados}: any) {
     const [disciplinas, setDisciplinas] = useState([]);
     const [showPicker, setShowPicker] = useState(false);
     const [date, setDate] = useState(new Date());
+
+    const { adicionarTarefa } = useTarefaStore();
 
     const [dateInput, setDateInput] = useState(format(new Date(), "dd/MM/yyyy"));
 
@@ -75,6 +78,7 @@ export default function ItemsHome({ atualizarDados}: any) {
                 },
               });
               setDisciplinas(response.data);
+              setSelectDisciplina(response.data[0].id);
             }
           } catch (error) {
             console.error("Erro ao buscar disciplinas:", error);
@@ -115,6 +119,7 @@ export default function ItemsHome({ atualizarDados}: any) {
             });
 
             if(response.status === 201) {
+                adicionarTarefa(response.data);
                 atualizarDados();
             } else {
               console.error("Erro ao criar tarefa:", response.data);

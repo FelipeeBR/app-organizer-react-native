@@ -10,6 +10,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import useTarefaStore from "../useTarefaStore";
 
 
 const getTaskStatusDetails = (task: any) => {
@@ -70,6 +71,8 @@ export default function Tarefa({ task, atualizarDados }: any) {
     register('status');
   },[register]);
 
+  const { adicionarTarefa, removerTarefa } = useTarefaStore();
+
   //Data
   const taskDate = task.date ? parseISO(task.date) : new Date();
   const [dateInput, setDateInput] = useState(format(addDays(taskDate, 1), "dd/MM/yyyy"));
@@ -121,6 +124,7 @@ export default function Tarefa({ task, atualizarDados }: any) {
   
       if (response.status === 200) {
         atualizarDados();
+        adicionarTarefa(response.data);
       } else {
         console.error("Erro ao atualizar tarefa:", response.data);
       }
@@ -196,6 +200,7 @@ export default function Tarefa({ task, atualizarDados }: any) {
       });
       if (response.status === 200) {
         atualizarDados();
+        removerTarefa(id);
       } else {
         console.error("Erro ao deletar tarefa:", response.data);
       }
@@ -208,7 +213,7 @@ export default function Tarefa({ task, atualizarDados }: any) {
 
   return (
     <View className="w-full bg-white rounded-lg shadow-md flex flex-col justify-between border border-slate-300 p-4 mb-2">
-      <Text className="font-medium">{task.title}</Text>
+      <Text numberOfLines={1} ellipsizeMode="tail" style={{ width: 200, fontSize: 16 }} className="font-medium">{task.title}</Text>
       <View className="flex-row gap-2">
         {icon}
         <Text className="ml-2">{message}</Text>

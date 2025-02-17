@@ -6,6 +6,7 @@ import * as SecureStore from "expo-secure-store";
 import Tarefa from "../components/Tarefa";
 import { Alert, View } from "react-native";
 import ItemsHome from "../components/ItemsHome";
+import useTarefaStore from "../useTarefaStore";
 
 interface ITarefa {
   id: number;
@@ -16,6 +17,8 @@ interface ITarefa {
 }
 
 export default function Home() {
+    const { tarefasHome, adicionarTarefa, adicionarTarefas } = useTarefaStore();
+
     const [selectedItem, setSelectedItem] = useState(null);
     const [tarefas, setTarefas] = useState<any[]>([
         {
@@ -52,6 +55,7 @@ export default function Home() {
                     }
                 });
                 setListTarefas(response.data);
+                adicionarTarefas(response.data);
             } catch(error: any) {
                 console.error('Erro ao buscar tarefas:', error.response.data);
             }
@@ -60,32 +64,35 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        if(listTarefas.length > 0) {
-            const updatedTarefas = tarefas.map(tarefa => {
-                let filteredRows = Array<any>();
+        if (tarefasHome.length > 0) {
+            const updatedTarefas = tarefas.map((tarefa) => {
+                let filteredRows: ITarefa[] = [];
+    
                 switch (tarefa.id) {
                     case 1:
-                        filteredRows = listTarefas.filter(t => t.status === "PENDING");
+                        filteredRows = tarefasHome.filter((t) => t.status === "PENDING");
                         break;
                     case 2:
-                        filteredRows = listTarefas.filter(t => t.status === "IN_PROGRESS");
+                        filteredRows = tarefasHome.filter((t) => t.status === "IN_PROGRESS");
                         break;
                     case 3:
-                        filteredRows = listTarefas.filter(t => t.status === "COMPLETED");
+                        filteredRows = tarefasHome.filter((t) => t.status === "COMPLETED");
                         break;
                     default:
                         filteredRows = [];
                 }
+    
                 return {
                     ...tarefa,
-                    rows: filteredRows
+                    rows: filteredRows,
                 };
             });
+    
             setTarefas(updatedTarefas);
         }
-    }, [listTarefas]);
+    }, [tarefasHome]);
 
-    const updateTarefaStatus = async (id: number, status: any) => {
+    /*const updateTarefaStatus = async (id: number, status: any) => {
         const tarefa = { ...listTarefas.find((task) => task.id === id), status };
         const token = await SecureStore.getItemAsync("authToken");
         if(!token) {
@@ -102,11 +109,39 @@ export default function Home() {
                 },
             });
             atualizarDados();
+            adicionarTarefa(response.data);
             return response.data;
         } catch (error) {
             console.error('Erro ao atualizar tarefa:', error);
         }
-    }
+    }*/
+
+    const updateTarefaStatus = async (id: number, status: string) => {
+        const tarefa = listTarefas.find((task) => task.id === id);
+        if (!tarefa) return;
+    
+        const tarefaAtualizada = { ...tarefa, status: status as "PENDING" | "IN_PROGRESS" | "COMPLETED" };
+    
+        const token = await SecureStore.getItemAsync("authToken");
+        if (!token) {
+            console.error('Token não encontrado');
+            return;
+        }
+    
+        try {
+            await axios.put(`${process.env.EXPO_PUBLIC_API_URL}/tarefa/${id}`, tarefaAtualizada, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+    
+            adicionarTarefa(tarefaAtualizada);
+        } catch (error) {
+            console.error('Erro ao atualizar tarefa:', error);
+        }
+    };
+        
 
     const handleDragEnd = async (srcColumn: any, destColumn: any, draggedItem: any) => {
         console.log("Eventos: ", srcColumn, destColumn, draggedItem.attributes.id);

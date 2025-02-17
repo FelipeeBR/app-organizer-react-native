@@ -10,6 +10,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import useTarefaStore from "../../useTarefaStore";
 
 const inputValidation = yup.object().shape({
   title: yup.string().required('O titulo é obrigatório'),
@@ -25,6 +26,8 @@ export default function CardTarefa({ tarefa }: any) {
     const [selectStatus, setSelectStatus] = useState(status);
     const [selectDisciplina, setSelectDisciplina] = useState(disciplinaId);
     const [data, setData] = useState(new Date());
+
+    const { adicionarTarefa, removerTarefa } = useTarefaStore();
 
     const [disciplinas, setDisciplinas] = useState([]);
     const taskDate = date ? parseISO(date) : new Date();
@@ -157,7 +160,7 @@ export default function CardTarefa({ tarefa }: any) {
     };
 
     const onSubmit = async (data: any) => {
-        try {
+      try {
           const dataFormatada = parse(dateInput, "dd/MM/yyyy", new Date());
           const dataInicioDoDia = startOfDay(dataFormatada);
           const dataISO = format(dataInicioDoDia, "yyyy-MM-dd'T'HH:mm:ss");
@@ -184,6 +187,7 @@ export default function CardTarefa({ tarefa }: any) {
             },
           });
           if(response.status === 200) {
+            adicionarTarefa(response.data);
             setModalVisible(!modalVisible);
           }else{
             console.error("Erro ao atualizar tarefa:", response.data);
@@ -193,7 +197,28 @@ export default function CardTarefa({ tarefa }: any) {
         } catch (error) {
           console.error("Erro ao submeter os dados:", error);
         }
-      };
+    };
+
+    const handleDeleteTarefa = async (id: number) => {
+      try {
+        const token = await SecureStore.getItemAsync("authToken");
+        if(!token) {
+          return;
+        }
+        const response = await axios.delete(`${process.env.EXPO_PUBLIC_API_URL}/tarefa/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.status === 200) {
+          removerTarefa(id);
+        } else {
+          console.error("Erro ao deletar tarefa:", response.data);
+        }
+      } catch (error) {
+        console.error("Erro ao deletar tarefa:", error);
+      }
+    };
 
     const memoData = useMemo(() => (
         <DateTimePicker
@@ -230,7 +255,7 @@ export default function CardTarefa({ tarefa }: any) {
                         <FontAwesome5 name="edit" size={16} color="white"/>
                     </TouchableOpacity>
 
-                    <TouchableOpacity className="flex items-center justify-center bg-red-500 text-white px-4 py-2 rounded-lg">
+                    <TouchableOpacity onPress={() => handleDeleteTarefa(id)} className="flex items-center justify-center bg-red-500 text-white px-4 py-2 rounded-lg">
                         <FontAwesome5 name="trash" size={16} color="white"/>
                     </TouchableOpacity>
                 </View>

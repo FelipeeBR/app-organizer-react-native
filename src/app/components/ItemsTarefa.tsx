@@ -9,6 +9,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import useTarefaStore from "../useTarefaStore";
 
 const inputValidation = yup.object().shape({
   title: yup.string().required('Titulo é obrigatório'),
@@ -26,6 +27,8 @@ export default function ItemsTarefa({ atualizarTarefas }: any) {
     const [disciplinas, setDisciplinas] = useState([]);
     const [showPicker, setShowPicker] = useState(false);
     const [date, setDate] = useState(new Date());
+
+    const { adicionarTarefa } = useTarefaStore();
 
     const [dateInput, setDateInput] = useState(format(new Date(), "dd/MM/yyyy"));
 
@@ -116,6 +119,7 @@ export default function ItemsTarefa({ atualizarTarefas }: any) {
             if(response.status === 201) {
                 atualizarTarefas();
                 setModalVisible(!modalVisible);
+                adicionarTarefa(response.data);
             } else {
               console.error("Erro ao criar tarefa:", response.data);
             }
