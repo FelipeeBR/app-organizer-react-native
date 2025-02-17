@@ -1,7 +1,8 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome5';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Tabs } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { getNotificacoes } from '../notificacao';
+import getNotificacoes  from '../notificacao';
 
 export default function TabLayout() {
     const [notificacoes, setNotificacoes] = useState<any[]>([]);
@@ -10,7 +11,7 @@ export default function TabLayout() {
         let isMounted = true;
         const fetchData = async () => {
             try {
-                const data = await getNotificacoes();
+                const data = await getNotificacoes[0]();
                 if(isMounted) {
                     setNotificacoes(data);
                 }
@@ -46,10 +47,10 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="concluido"
+                name="desempenho"
                 options={{
-                title: 'Concluídos',
-                tabBarIcon: ({ color }) => <FontAwesome size={28} name="check" color={color} />,
+                title: 'Desempenho',
+                tabBarIcon: ({ color }) => <FontAwesome6 size={28} name="user-graduate" color={color} />,
                 }}
             />
             <Tabs.Screen

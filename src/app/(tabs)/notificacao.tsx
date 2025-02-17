@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, ScrollView, ActivityIndicator } from "react-native";
-import { getNotificacoes } from "../notificacao";
+import getNotificacoes from "../notificacao";
 import CardNotificacao from "../components/CardNotificacao";
 
 export default function Notificacao() {
@@ -11,7 +11,7 @@ export default function Notificacao() {
         let isMounted = true;
         const fetchData = async () => {
             try {
-                const data = await getNotificacoes();
+                const data = await getNotificacoes[0]();
                 if(isMounted) {
                     setNotificacoes(data);
                     setLoading(false);
@@ -26,7 +26,7 @@ export default function Notificacao() {
     }, []);
 
     return (
-        <View className="flex bg-gray-100">
+        <View className="flex bg-gray-100 h-full">
             <ScrollView className="flex-1 p-4 min-h-[80vh] bg-gray-200" contentContainerStyle={{ paddingBottom: 50 }}>
                 {loading ? (
                     <View className="flex-1 items-center justify-center">

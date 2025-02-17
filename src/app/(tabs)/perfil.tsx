@@ -5,7 +5,6 @@ import * as SecureStore from "expo-secure-store";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {jwtDecode, JwtPayload} from 'jwt-decode';
 import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
 
 
 Notifications.setNotificationHandler({
@@ -33,7 +32,7 @@ export default function Perfil() {
     useEffect(() => {
         const getUser = async () => {
             const token = await SecureStore.getItemAsync("authToken");
-            if (!token) return;
+            if(!token) return;
             const decodedToken = jwtDecode<JwtEmail>(token);
             setUser(decodedToken.email);  
         };
