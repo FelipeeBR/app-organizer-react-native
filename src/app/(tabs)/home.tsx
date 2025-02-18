@@ -7,6 +7,7 @@ import Tarefa from "../components/Tarefa";
 import { Alert, View } from "react-native";
 import ItemsHome from "../components/ItemsHome";
 import useTarefaStore from "../useTarefaStore";
+import useNotificacaoStore from "../useNotificacaoStore";
 
 interface ITarefa {
   id: number;
@@ -18,6 +19,7 @@ interface ITarefa {
 
 export default function Home() {
     const { tarefasHome, adicionarTarefa, adicionarTarefas } = useTarefaStore();
+    const { carregarNotificacoes } = useNotificacaoStore();
 
     const [selectedItem, setSelectedItem] = useState(null);
     const [tarefas, setTarefas] = useState<any[]>([
@@ -39,6 +41,10 @@ export default function Home() {
     ]);
     const [listTarefas, setListTarefas] = useState<ITarefa[]>([]);
     const boardRepository = new BoardRepository(tarefas);
+
+    useEffect(() => {
+        carregarNotificacoes();
+    }, []);
 
     useEffect(() => {
         const fetchTarefas = async () => {

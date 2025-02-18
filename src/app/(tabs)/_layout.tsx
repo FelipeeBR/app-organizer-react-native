@@ -1,35 +1,10 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Tabs } from 'expo-router';
-import { useEffect, useState } from 'react';
-import axios from "axios";
-import * as SecureStore from "expo-secure-store";
+import useNotificacaoStore from "../useNotificacaoStore";
 
 export default function TabLayout() {
-    const [notificacoes, setNotificacoes] = useState<any[]>([]);
-
-    useEffect(() => {
-        let isMounted = true;
-        const fetchNotificacoes = async () => {
-            try {
-                const token = await SecureStore.getItemAsync("authToken");
-                const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/notificacoes`, {
-                    headers: {
-                        Authorization: `Bearer ${String(token)}`,
-                    },
-                });
-                if(isMounted) {
-                    setNotificacoes(response.data);
-                }
-                return response.data;
-            } catch (error) {
-            }
-        }
-        fetchNotificacoes();
-        return () => {
-            isMounted = false;
-        };
-    }, []);
+    const { notificacoes } = useNotificacaoStore();
 
     return (
         <Tabs screenOptions={{ tabBarActiveTintColor: '#1F2937' }}>

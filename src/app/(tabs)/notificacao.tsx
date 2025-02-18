@@ -3,10 +3,13 @@ import { Text, View, ScrollView, ActivityIndicator } from "react-native";
 import CardNotificacao from "../components/CardNotificacao";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import useNotificacaoStore from "../useNotificacaoStore";
 
 export default function Notificacao() {
     const [notificacoes, setNotificacoes] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+
+    const { removerNotificacao, adicionarNotificacao } = useNotificacaoStore();
 
     useEffect(() => {
         let isMounted = true;
@@ -34,6 +37,7 @@ export default function Notificacao() {
 
     const handleUpdateNotificacao = (idAtualizado: number) => {
         setNotificacoes(prev => prev.filter(n => n.id !== idAtualizado));
+        removerNotificacao(idAtualizado);
     };
 
     return (
