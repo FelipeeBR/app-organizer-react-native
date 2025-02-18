@@ -96,12 +96,12 @@ export default function Perfil() {
                             {user.expoPushToken ? (
                                 <View className="flex-row items-center gap-2">
                                     <FontAwesome name="bell" size={24} color="white" />
-                                    <Text className="text-white">Desativar Notificacoes</Text>
+                                    <Text className="text-white">Desativar Notificações</Text>
                                 </View>
                             ) : (
                                 <View className="flex-row items-center gap-2">
                                     <FontAwesome name="bell-o" size={24} color="white" />
-                                    <Text className="text-white">Ativar Notificacoes</Text>
+                                    <Text className="text-white">Ativar Notificações</Text>
                                 </View>
                             )}
                         </TouchableOpacity>

@@ -60,8 +60,16 @@ export default function Register() {
 
     return (
         <View className="flex-1 items-center justify-center m-5">
+            <View className='flex flex-col items-center justify-center p-5'>
+                <View>
+                    <Text className='text-3xl font-extrabold'>Organizer</Text>
+                </View>
+                <View>
+                    <Text className="text-base">Controle Universitário</Text>
+                </View>
+            </View>
             <View>
-                <Text className="text-3xl font-bold">Cadastre-se</Text>
+                <Text className="text-2xl font-bold">Cadastre-se</Text>
             </View>
             <View className="flex-1 justify-center m-5">
                 <View className="gap-3">
