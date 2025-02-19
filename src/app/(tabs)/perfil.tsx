@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, Alert, ActivityIndicator, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import * as Notifications from 'expo-notifications';
 import axios from "axios";
-import { set } from "date-fns";
 
 interface User {
     name: string;
@@ -51,27 +50,48 @@ export default function Perfil() {
 
     async function handleNotification() {
         if(!user.expoPushToken) {
-            const { status } = await Notifications.requestPermissionsAsync();
-            if (status !== 'granted') {
-                Alert.alert('Notificações', 'Permissão para notificações não concedida.');
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+    
+            if(existingStatus !== 'granted') {
+                const { status } = await Notifications.requestPermissionsAsync();
+                finalStatus = status;
+            }
+    
+            if(finalStatus !== 'granted') {
+                Alert.alert('Notificações', 'Permissão para notificações não concedida. Verifique as configurações do app.');
                 return;
             }
-            const pushToken = (await Notifications.getExpoPushTokenAsync()).data;
-            try {
-                const token = await SecureStore.getItemAsync("authToken");
-                if(!token) return;
-                const response = await axios.put(`${process.env.EXPO_PUBLIC_API_URL}/salvar-token`, 
-                    { expoToken: pushToken, token: String(token) }, 
-                    { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
-                );                
-                setUser({...user, expoPushToken: pushToken});
-                return response.data;
-            } catch (error) {
+
+            if(Platform.OS === 'android') {
+                await Notifications.setNotificationChannelAsync('default', {
+                    name: 'default',
+                    importance: Notifications.AndroidImportance.MAX,
+                    vibrationPattern: [0, 250, 250, 250],
+                    lightColor: '#FF231F7C',
+                });
             }
-        } else{
+    
+            const pushToken = (await Notifications.getExpoPushTokenAsync()).data;
+    
             try {
                 const token = await SecureStore.getItemAsync("authToken");
                 if (!token) return;
+                const response = await axios.put(
+                    `${process.env.EXPO_PUBLIC_API_URL}/salvar-token`,
+                    { expoToken: pushToken, token: String(token) },
+                    { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
+                );                
+    
+                setUser(prevUser => ({ ...prevUser, expoPushToken: pushToken }));
+                return response.data;
+            } catch (error) {
+                console.error("Erro ao salvar token:", error);
+            }
+        } else {
+            try {
+                const token = await SecureStore.getItemAsync("authToken");
+                if(!token) return;
     
                 const response = await axios.put(
                     `${process.env.EXPO_PUBLIC_API_URL}/remover-token`,
@@ -82,6 +102,7 @@ export default function Perfil() {
                 setUser(prevUser => ({ ...prevUser, expoPushToken: null }));
                 return response.data;
             } catch (error) {
+                console.error("Erro ao remover token:", error);
             }
         }
     }

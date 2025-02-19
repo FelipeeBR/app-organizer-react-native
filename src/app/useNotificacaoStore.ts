@@ -35,7 +35,6 @@ const useNotificacaoStore = create<NotificacaoStore>((set, get) => ({
 
             return response.data;
         } catch (error) {
-            console.error("Erro ao carregar notificações:", error);
             return [];
         }
     },
