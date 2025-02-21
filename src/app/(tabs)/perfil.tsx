@@ -5,6 +5,7 @@ import * as SecureStore from "expo-secure-store";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import * as Notifications from 'expo-notifications';
 import axios from "axios";
+import Constants from "expo-constants";
 
 interface User {
     name: string;
@@ -72,7 +73,9 @@ export default function Perfil() {
                 });
             }
     
-            const pushToken = (await Notifications.getExpoPushTokenAsync()).data;
+            const pushToken = (await Notifications.getExpoPushTokenAsync({
+                projectId: Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId,
+            })).data;
     
             try {
                 const token = await SecureStore.getItemAsync("authToken");

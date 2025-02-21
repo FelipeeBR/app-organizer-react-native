@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1008632306992",
+    "project_id": "notificacao-f56f0",
+    "storage_bucket": "notificacao-f56f0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008632306992:android:5b0460423051d036073cf5",
+        "android_client_info": {
+          "package_name": "com.felipemen74.OrganizerApp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHgGG_ZzlPPb4KGXq7TwuHw6o5HuBzar4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

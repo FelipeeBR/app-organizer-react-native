@@ -17,7 +17,11 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": ["NOTIFICATIONS"],
-      "package": "com.felipemen74.OrganizerApp"
+      "package": "com.felipemen74.OrganizerApp",
+      "googleServicesFile": "./google-services.json",
+      "config": {
+        "apiKey": "AIzaSyDHgGG_ZzlPPb4KGXq7TwuHw6o5HuBzar4"
+      }
     },
     "web": {
       "bundler": "metro",
