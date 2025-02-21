@@ -4,6 +4,7 @@ import CardNotificacao from "../components/CardNotificacao";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import useNotificacaoStore from "../useNotificacaoStore";
+import { set } from "date-fns";
 
 export default function Notificacao() {
     const [notificacoes, setNotificacoes] = useState<any[]>([]);
@@ -27,6 +28,7 @@ export default function Notificacao() {
                 }
                 return response.data;
             } catch (error) {
+                setLoading(false);
             }
         }
         fetchNotificacoes();
@@ -41,20 +43,20 @@ export default function Notificacao() {
     };
 
     return (
-        <View className="flex bg-gray-100 h-full">
-            <ScrollView className="flex-1 p-4 min-h-[80vh] bg-gray-200" contentContainerStyle={{ paddingBottom: 50 }}>
+        <View className="flex-1 bg-gray-200 h-full">
+            <View>
                 {loading ? (
-                    <View className="flex-1 items-center justify-center">
-                        <ActivityIndicator size="large" color="#0000ff" />
-                    </View>
+                    <ActivityIndicator size="large" color="#0000ff" />
                 ) : notificacoes && notificacoes.length > 0 ? (
-                    notificacoes.map((notificacao: any) => <CardNotificacao key={notificacao.id} info={notificacao} onUpdate={handleUpdateNotificacao} />)
+                    <ScrollView className="flex-1 p-4 min-h-[80vh]" contentContainerStyle={{ paddingBottom: 50 }}>
+                        {notificacoes.map((notificacao: any) => <CardNotificacao key={notificacao.id} info={notificacao} onUpdate={handleUpdateNotificacao} />)}
+                    </ScrollView>
                 ) : (
-                    <View className="flex-1 items-center justify-center">
+                    <View className="flex-1 items-center justify-center p-4 min-h-[80vh]">
                         <Text className="text-gray-500 text-lg">Nenhuma notificação encontrada</Text>
                     </View>
                 )}
-            </ScrollView>
+            </View>
         </View>
     );
 }

@@ -39,13 +39,13 @@ const getColor = (tipo: any) => {
 
 
 const inputValidation = yup.object().shape({
-    description: yup.string().required('A descrição é obrigatória').max(30, 'A descrição deve ter no máximo 30 caracteres'),
+    description: yup.string().required('A descrição é obrigatória').max(50, 'A descrição deve ter no máximo 50 caracteres'),
     date: yup.date(),
     time: yup.date(),
     tipo: yup.string().required('Escolha o tipo'),
 });
 
-export default function CardAgenda({ info }: any) {
+export default function CardAgenda({ info, atualizarDados }: any) {
     const { id, description, date, tipo } = info;
     const [modalVisible, setModalVisible] = useState(false);
     const [showPicker, setShowPicker] = useState(false);
@@ -179,6 +179,7 @@ export default function CardAgenda({ info }: any) {
                 },
             });
             handleCloseModal();
+            atualizarDados();
             return response.data;
         } catch (error) {
             console.error('Erro ao atualizar agenda:', error);
@@ -195,6 +196,7 @@ export default function CardAgenda({ info }: any) {
                 }
             });
             if (response.status === 200) {
+                atualizarDados();
                 return response.data;
             }
                 

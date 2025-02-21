@@ -186,7 +186,7 @@ export default function Home() {
             });
             setListTarefas(response.data);
         } catch(error: any) {
-            console.error('Erro ao buscar tarefas:', error.response.data);
+            return;
         }
     };
 
