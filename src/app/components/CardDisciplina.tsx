@@ -8,6 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import { Picker } from '@react-native-picker/picker';
+import useTarefaStore from "../useTarefaStore";
 
 
 const inputValidation = yup.object().shape({
@@ -22,6 +23,8 @@ export default function CardDisciplina({ disciplina }: any) {
     const [selectTipo, setSelectTipo] = useState();
     const [selectDependencia, setSelectDependencia] = useState();
     const router = useRouter();
+
+    const { atualizarDados } = useTarefaStore();
 
     const { register, handleSubmit, setValue, control, formState: { errors },} = useForm({
         resolver: yupResolver(inputValidation),
@@ -57,7 +60,8 @@ export default function CardDisciplina({ disciplina }: any) {
                     Authorization: `Bearer ${String(token)}`,
                 },
             });
-            console.log(response.data);
+            atualizarDados();
+            return response.data;
         } catch (error) {
             console.log(error);
         }

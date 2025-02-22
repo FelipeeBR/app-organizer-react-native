@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import axios from "axios";
+import * as SecureStore from "expo-secure-store";
 
 interface ITarefa {
     id: number;
@@ -9,10 +11,11 @@ interface ITarefa {
 }
 
 interface TarefaStore {
-  tarefasHome: ITarefa[];
-  adicionarTarefa: (tarefa: ITarefa) => void;
-  adicionarTarefas: (tarefas: ITarefa[]) => void;
-  removerTarefa: (id: number) => void;
+    tarefasHome: ITarefa[];
+    adicionarTarefa: (tarefa: ITarefa) => void;
+    adicionarTarefas: (tarefas: ITarefa[]) => void;
+    removerTarefa: (id: number) => void;
+    atualizarDados: () => Promise<void>;
 }
 
 const useTarefaStore = create<TarefaStore>((set) => ({
@@ -33,7 +36,26 @@ const useTarefaStore = create<TarefaStore>((set) => ({
         set((state) => ({
             tarefasHome: state.tarefasHome.filter(t => t.id !== id)
         })),
-}));
 
+    atualizarDados: async () => {
+        try {
+            const tokenData = await SecureStore.getItemAsync("authToken");
+            if (!tokenData) {
+                console.error("Token não encontrado");
+                return;
+            }
+            const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/tarefasUser`, {
+                headers: {
+                    Authorization: `Bearer ${String(tokenData)}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            set(() => ({ tarefasHome: response.data }));
+        } catch (error) {
+            console.error("Erro ao buscar tarefas:", error);
+        }
+    }
+}));
 
 export default useTarefaStore;

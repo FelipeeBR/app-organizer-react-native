@@ -28,6 +28,7 @@ export default function Notificacao() {
                 }
                 return response.data;
             } catch (error) {
+                setNotificacoes([]);
                 setLoading(false);
             }
         }

@@ -27,6 +27,7 @@ export default function DisciplinaTarefa() {
       setListTarefas(response.data);
       setLoading(false);
     } catch(error: any) {
+      setListTarefas([]);
       setLoading(false);
       return;
     }
@@ -47,7 +48,7 @@ export default function DisciplinaTarefa() {
         ) : listTarefas && listTarefas.length > 0 ? (
           listTarefas.map((tarefa: any) => <CardTarefa key={tarefa.id} tarefa={tarefa} />)
         ) : (
-          <View className="flex-1 items-center justify-center">
+          <View className="flex-1 items-center justify-center p-4 min-h-[80vh]">
             <Text className="text-gray-500 text-lg">Nenhuma tarefa encontrada</Text>
           </View>
         )}

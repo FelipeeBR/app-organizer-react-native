@@ -4,6 +4,7 @@ import axios from 'axios';
 import * as SecureStore from "expo-secure-store";
 import CardDisciplina from "../../components/CardDisciplina";
 import ItemsDisciplina from "../../components/ItemsDisciplina";
+import { set } from "date-fns";
 
 
 export default function Disciplina() {
@@ -22,6 +23,7 @@ export default function Disciplina() {
         setDisciplinas(response.data);
         setLoading(false);
       } catch (error) {
+        setDisciplinas([]);
         setLoading(false);
         return;
       }
@@ -40,7 +42,7 @@ export default function Disciplina() {
         ) : disciplinas && disciplinas.length > 0 ? (
           disciplinas.map((disciplina: any) => <CardDisciplina key={disciplina.id} disciplina={disciplina} />)
         ) : (
-          <View className="flex-1 items-center justify-center">
+          <View className="flex-1 items-center justify-center p-4 min-h-[80vh]">
             <Text className="text-gray-500 text-lg">Nenhuma disciplina encontrada</Text> 
           </View>
         )}

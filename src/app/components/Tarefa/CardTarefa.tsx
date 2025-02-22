@@ -27,7 +27,7 @@ export default function CardTarefa({ tarefa }: any) {
     const [selectDisciplina, setSelectDisciplina] = useState(disciplinaId);
     const [data, setData] = useState(new Date());
 
-    const { adicionarTarefa, removerTarefa } = useTarefaStore();
+    const { adicionarTarefa, removerTarefa, atualizarDados } = useTarefaStore();
 
     const [disciplinas, setDisciplinas] = useState([]);
     const taskDate = date ? parseISO(date) : new Date();
@@ -210,11 +210,8 @@ export default function CardTarefa({ tarefa }: any) {
             Authorization: `Bearer ${token}`,
           },
         });
-        if (response.status === 200) {
-          removerTarefa(id);
-        } else {
-          console.error("Erro ao deletar tarefa:", response.data);
-        }
+        removerTarefa(id);
+        return response.data;
       } catch (error) {
         console.error("Erro ao deletar tarefa:", error);
       }

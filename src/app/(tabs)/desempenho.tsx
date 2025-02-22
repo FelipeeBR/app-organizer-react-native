@@ -7,8 +7,8 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 export default function Desempenho() {
     const [valores, setValores] = React.useState({
-        aproveitamento: 0,
-        recomendacao: "",
+        aproveitamento: null,
+        recomendacao: null,
         tarefasCompletadasCount: 0,
         tarefasPendentesCount: 0,
         tarefasConcluidasRecentemente: 0,
@@ -45,7 +45,7 @@ export default function Desempenho() {
                     <Text className="flex text-white">Mostrar meu desempenho</Text>
                 </TouchableOpacity>
             </View>
-            {valores.aproveitamento > 0 && (
+            {valores.aproveitamento !== null && (
                 <ScrollView className="bg-white rounded-xl shadow-lg p-6 space-y-6" contentContainerStyle={{ paddingBottom: 50 }}>
                     <View className="flex-row items-center space-x-4 border-b p-4">
                         <FontAwesome5 name="chart-line" size={24} color="#1f2937" />
@@ -105,13 +105,13 @@ export default function Desempenho() {
                                 ))}
                             </View>
                         ) : (
-                            <Text className="text-gray-600 mt-2">Nenhuma tarefa prioritária no momento.</Text>
+                            <Text className="text-gray-600 mt-2 text-center">Nenhuma tarefa prioritária no momento.</Text>
                         )}
                     </View>
                 </ScrollView>
             )}
 
-            {valores.aproveitamento === 0 && ver && (
+            {valores.aproveitamento === null && ver && (
                 <View className="flex-row bg-white rounded-xl shadow-lg p-6 text-center m-3">
                     <FontAwesome5 name="exclamation-triangle" size={24} color="#ca8a04" />
                     <Text className="text-lg font-semibold text-gray-800 text-center">Não foi possível calcular o desempenho</Text>

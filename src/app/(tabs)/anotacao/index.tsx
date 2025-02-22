@@ -26,6 +26,7 @@ export default function Anotacao() {
         setAnotacoes(response.data);
         setLoading(false);
       } catch (error) {
+        setAnotacoes([]);
         setLoading(false);
         return;
       }
@@ -44,7 +45,7 @@ export default function Anotacao() {
       ) : anotacoes && anotacoes.length > 0 ? (
         anotacoes.map((anotacao: any) => <CardAnotacao key={anotacao.id} info={anotacao} />)
       ) : (
-        <View className="flex-1 items-center justify-center">
+        <View className="flex-1 items-center justify-center p-4 min-h-[80vh]">
           <Text className="text-gray-500 text-lg">Nenhuma anotação encontrada</Text> 
         </View>
       )}

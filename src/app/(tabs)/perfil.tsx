@@ -112,7 +112,8 @@ export default function Perfil() {
 
     return (
         <View className="flex-1 justify-center items-center bg-gray-200">
-            <Text className="text-2xl font-bold mb-6">{user.name}</Text>
+            <FontAwesome name="user-circle-o" size={50}/>
+            <Text className="text-2xl font-bold mb-6 mt-2">{user.name}</Text>
             <View className="flex-row items-center gap-2">
                 {!loading ? (
                     <View className="flex-row items-center gap-2">
