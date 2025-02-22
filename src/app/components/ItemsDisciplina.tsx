@@ -102,6 +102,8 @@ export default function ItemsDisciplina() {
                                     className="w-full"
                                     placeholder="Descrição"
                                     placeholderTextColor="gray"
+                                    multiline
+                                    numberOfLines={4}
                                     onChangeText={text => setValue('content', text)}
                                 />
                                 </View>

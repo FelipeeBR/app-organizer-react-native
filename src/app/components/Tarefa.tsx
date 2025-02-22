@@ -1,7 +1,7 @@
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Modal, Button, Pressable, Platform } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Modal, Button, Pressable, Platform, ScrollView } from "react-native";
 import { format, parse, formatISO, parseISO, addDays, startOfDay, add } from 'date-fns';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -235,7 +235,7 @@ export default function Tarefa({ task, atualizarDados }: any) {
         onRequestClose={handleCloseModal} 
       >
         <View className="flex-1 justify-center items-center">
-            <View className="w-[90%] bg-white rounded-lg p-4 shadow-xl border border-slate-300 m-32">
+            <ScrollView className="w-[90%] bg-white rounded-lg p-4 shadow-xl border border-slate-300 m-32" contentContainerStyle={{ paddingBottom: 50 }}>
                 <Text className="flex text-slate-800 text-xl items-center justify-center">Editar Tarefa</Text>
                 <View className="gap-3">
                   <View className="flex flex-row w-full px-8 py-4 items-center justify-between rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-base">
@@ -256,6 +256,8 @@ export default function Tarefa({ task, atualizarDados }: any) {
                       className="w-full"
                       placeholder="Descrição"
                       placeholderTextColor="gray"
+                      multiline
+                      numberOfLines={4}
                       onChangeText={text => setValue('description', text)}
                       defaultValue={task.description}
                     />
@@ -336,7 +338,7 @@ export default function Tarefa({ task, atualizarDados }: any) {
                     </TouchableOpacity>
                   </View>
                 </View>
-            </View>
+            </ScrollView>
         </View>
       </Modal>
     </View>

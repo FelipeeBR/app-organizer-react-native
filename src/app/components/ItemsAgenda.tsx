@@ -17,7 +17,7 @@ const inputValidation = yup.object().shape({
     tipo: yup.string().required('Escolha o tipo'),
 });
 
-export default function ItemsAgenda() {
+export default function ItemsAgenda({ atualizarDados }: any) {
     const [modalVisible, setModalVisible] = useState(false);
     const [showPicker, setShowPicker] = useState(false);
     const [showPicker2, setShowPicker2] = useState(false);
@@ -124,6 +124,7 @@ export default function ItemsAgenda() {
             });
             if(response.status === 201) {
                 setModalVisible(false);
+                atualizarDados();
             }
         } catch (error) {
             console.error("Erro ao criar agenda:", error);

@@ -195,11 +195,8 @@ export default function CardAgenda({ info, atualizarDados }: any) {
                     "Content-Type": "application/json",
                 }
             });
-            if (response.status === 200) {
-                atualizarDados();
-                return response.data;
-            }
-                
+            atualizarDados();
+            return response.data;     
         } catch (error) {
             console.error('Erro ao deletar agenda:', error);
         }

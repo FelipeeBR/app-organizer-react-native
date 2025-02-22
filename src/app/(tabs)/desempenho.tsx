@@ -41,6 +41,7 @@ export default function Desempenho() {
 
             <View className="flex justify-center mb-6 mx-5">
                 <TouchableOpacity onPress={handleDesempenho} className="flex-row bg-blue-600 text-white font-semibold p-3 items-center justify-center rounded-lg">
+                    <FontAwesome5 name="chart-line" size={24} color="white" />
                     <Text className="flex text-white">Mostrar meu desempenho</Text>
                 </TouchableOpacity>
             </View>
@@ -111,8 +112,9 @@ export default function Desempenho() {
             )}
 
             {valores.aproveitamento === 0 && ver && (
-                <View className="bg-white rounded-xl shadow-lg p-6 text-center">
-                    <Text className="text-lg font-semibold text-gray-800">Não foi possível calcular o desempenho</Text>
+                <View className="flex-row bg-white rounded-xl shadow-lg p-6 text-center m-3">
+                    <FontAwesome5 name="exclamation-triangle" size={24} color="#ca8a04" />
+                    <Text className="text-lg font-semibold text-gray-800 text-center">Não foi possível calcular o desempenho</Text>
                 </View>
             )}
         </View>

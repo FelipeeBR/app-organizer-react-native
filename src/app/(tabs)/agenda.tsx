@@ -31,7 +31,7 @@ export default function Agenda() {
     const [markedDates, setMarkedDates] = useState({});
     const [loading, setLoading] = useState(true);
 
-    const fetchAgendas = async () => {
+    const atualizarDados = async () => {
         try {
           const token = await SecureStore.getItemAsync("authToken");
           const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/agendas`, {
@@ -49,19 +49,20 @@ export default function Agenda() {
 
           setMarkedDates(formattedDates);
         } catch (error) {
-          setLoading(false);
+            setAgendas([]);
+            setLoading(false);
           return;
         }
       };
 
     useEffect(() => {
-        fetchAgendas();
+        atualizarDados();
     }, [agendas]);
 
     return (
         <View className="bg-gray-200">
             <View>
-                <ItemsAgenda/>
+                <ItemsAgenda atualizarDados={atualizarDados}/>
             </View>
             <View className='flex m-3 rounded-lg'>
                 <Calendar
@@ -80,7 +81,7 @@ export default function Agenda() {
                         <ActivityIndicator size="large" color="#0000ff" />
                     </View>
                 ) : agendas && agendas.length > 0 ? (
-                    agendas.map((agenda: any) => <CardAgenda key={agenda.id} info={agenda} atualizarDados={fetchAgendas} />)
+                    agendas.map((agenda: any) => <CardAgenda key={agenda.id} info={agenda} atualizarDados={atualizarDados} />)
                 ) : (
                     <View className="flex-1 items-center justify-center">
                         <Text className="text-gray-500 text-lg">Nenhuma agenda encontrada</Text> 
