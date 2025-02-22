@@ -39,7 +39,7 @@ export default function Anotacao() {
       <ItemsAnotacao/>
       <ScrollView className="flex-1 p-4 min-h-[80vh] bg-gray-200" contentContainerStyle={{ paddingBottom: 50 }}>
       {loading ? (
-        <View className="flex-1 items-center justify-center">
+        <View className="flex-1 items-center justify-center p-4 min-h-[80vh]">
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       ) : anotacoes && anotacoes.length > 0 ? (

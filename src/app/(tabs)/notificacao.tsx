@@ -47,7 +47,9 @@ export default function Notificacao() {
         <View className="flex-1 bg-gray-200 h-full">
             <View>
                 {loading ? (
-                    <ActivityIndicator size="large" color="#0000ff" />
+                    <View className="flex-1 items-center justify-center p-4 min-h-[80vh]">
+                        <ActivityIndicator size="large" color="#0000ff" />
+                    </View>
                 ) : notificacoes && notificacoes.length > 0 ? (
                     <ScrollView className="flex-1 p-4 min-h-[80vh]" contentContainerStyle={{ paddingBottom: 50 }}>
                         {notificacoes.map((notificacao: any) => <CardNotificacao key={notificacao.id} info={notificacao} onUpdate={handleUpdateNotificacao} />)}
