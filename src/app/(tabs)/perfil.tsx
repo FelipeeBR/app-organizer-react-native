@@ -39,7 +39,7 @@ export default function Perfil() {
                 } 
                 return response.data;
             } catch (error) {  
-                console.log(error);
+                setLoading(false);
             }
             
         };
@@ -139,7 +139,13 @@ export default function Perfil() {
                         </TouchableOpacity>
                     </View>
                 ): (
-                    <ActivityIndicator size="large" color="blue" />
+                    <TouchableOpacity
+                            className="flex-row bg-red-500 p-3 rounded"
+                            onPress={handleLogout}
+                        >
+                            <FontAwesome name="sign-out" size={24} color="white" />
+                            <Text className="text-white font-bold">Sair</Text>
+                    </TouchableOpacity>
                 )}
                 
             </View>
