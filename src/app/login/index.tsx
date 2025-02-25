@@ -1,4 +1,4 @@
-import { Text, TextInput, TouchableOpacity, View, Alert, ActivityIndicator } from "react-native";
+import { Text, TextInput, TouchableOpacity, View, Alert, ActivityIndicator, Linking } from "react-native";
 import FontAwesome from '@expo/vector-icons/FontAwesome5';
 import { Link } from "expo-router"; 
 import { useState, useEffect } from "react";
@@ -72,7 +72,6 @@ export default function Login() {
       setLoading(false);
     }
   };
-  
 
   return (
     <View className="flex-1 items-center justify-center m-5">
@@ -124,6 +123,13 @@ export default function Login() {
           <View className="mt-5 tracking-wide font-semibold bg-blue-500 w-full py-4 rounded-lg hover:bg-blue-700 transition-all duration-300 ease-in-out flex items-center justify-center">
             <TouchableOpacity className="flex w-full items-center" onPress={handleSubmit(onSubmit)} disabled={loading}>
               {loading ? <ActivityIndicator color="white"/> : <Text className="text-white">Entrar</Text>}
+            </TouchableOpacity>
+          </View>
+
+          <View className='flex-row items-center justify-center mt-3'>
+            <Text>Esqueceu sua senha?</Text>
+            <TouchableOpacity onPress={() => Linking.openURL('https://organizer-henna.vercel.app/recuperar-senha')}>
+              <Text className='text-blue-500 underline'>Recuperar</Text>
             </TouchableOpacity>
           </View>
 

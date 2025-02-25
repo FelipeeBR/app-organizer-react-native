@@ -180,9 +180,13 @@ export default function ItemsHome({ atualizarDados}: any) {
                                 onValueChange={(itemValue, itemIndex) =>
                                 setSelectDisciplina(itemValue)
                                 }>
-                                {disciplinas.map((disciplina: any) => (
+                                {disciplinas.length === 0 ? (
+                                <Picker.Item label="Carregando disciplinas..." value="" enabled={false} />
+                                ) : (
+                                disciplinas.map((disciplina: any) => (
                                     <Picker.Item key={disciplina.id} label={disciplina.name} value={disciplina.id} />
-                                ))}
+                                ))
+                                )}
                             </Picker>
                             
                             <Text>Prioridade</Text>

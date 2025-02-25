@@ -79,7 +79,7 @@ export default function Tarefa({ task, atualizarDados }: any) {
   const [showPicker, setShowPicker] = useState(false);
 
   const [statusDetails, setStatusDetails] = useState(getTaskStatusDetails(task));
-  const [disciplinas, setDisciplinas] = useState([]);
+  const [disciplinas, setDisciplinas] = useState<any[]>([]);
 
   useEffect(() => {
     setStatusDetails(getTaskStatusDetails(task));
@@ -273,9 +273,13 @@ export default function Tarefa({ task, atualizarDados }: any) {
                     onValueChange={(itemValue, itemIndex) =>
                       setSelectDisciplina(itemValue)
                     }>
-                      {disciplinas.map((disciplina: any) => (
-                        <Picker.Item key={disciplina.id} label={disciplina.name} value={disciplina.id} />
-                      ))}
+                      {disciplinas.length === 0 ? (
+                        <Picker.Item label="Carregando disciplinas..." value="" enabled={false} />
+                      ) : (
+                        disciplinas.map((disciplina: any) => (
+                          <Picker.Item key={disciplina.id} label={disciplina.name} value={disciplina.id} />
+                        ))
+                      )}
                   </Picker>
                   
                   <Text>Prioridade</Text>
