@@ -9,13 +9,12 @@ import axios from "axios";
 
 const inputValidation = yup.object().shape({
   email: yup.string().email('E-mail inválido').required('E-mail é obrigatório'),
-  password: yup.string().required('Senha não pode ficar em branco').min(6, 'Senha deve ter pelo menos 6 caracteres'),
+  password: yup.string().required('Senha não pode ficar em branco').min(8, 'Senha deve ter pelo menos 8 caracteres'),
   confirmPassword: yup.string().required('Confirme sua senha').test('passwords-match', 'Senhas precisam ser idênticas', function(value) {
     const { password } = this.parent;
     return password === value;
   }),
   name: yup.string().required('Nome é obrigatório'),
-
 });
 
 export default function Register() {
