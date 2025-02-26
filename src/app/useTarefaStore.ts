@@ -39,6 +39,7 @@ const useTarefaStore = create<TarefaStore>((set) => ({
 
     atualizarDados: async () => {
         try {
+            set(() => ({ tarefasHome: [] }));
             const tokenData = await SecureStore.getItemAsync("authToken");
             if (!tokenData) {
                 console.error("Token não encontrado");

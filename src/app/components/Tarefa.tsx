@@ -1,8 +1,8 @@
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Modal, Button, Pressable, Platform, ScrollView } from "react-native";
-import { format, parse, formatISO, parseISO, addDays, startOfDay, add } from 'date-fns';
+import { View, Text, TextInput, TouchableOpacity, Modal, Pressable, Platform, ScrollView } from "react-native";
+import { format, parse, formatISO, parseISO, addDays, startOfDay } from 'date-fns';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useForm } from 'react-hook-form';
@@ -53,7 +53,7 @@ const inputValidation = yup.object().shape({
   date: yup.date().required('Preencha a data'),
 });
 
-export default function Tarefa({ task, atualizarDados }: any) {
+export default function Tarefa({ task, fetchDados }: any) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectPriority, setSelectPriority] = useState(task.priority);
   const [selectStatus, setSelectStatus] = useState(task.status);
@@ -71,7 +71,7 @@ export default function Tarefa({ task, atualizarDados }: any) {
     register('status');
   },[register]);
 
-  const { adicionarTarefa, removerTarefa } = useTarefaStore();
+  const { adicionarTarefa, removerTarefa, atualizarDados } = useTarefaStore();
 
   //Data
   const taskDate = task.date ? parseISO(task.date) : new Date();
@@ -122,9 +122,10 @@ export default function Tarefa({ task, atualizarDados }: any) {
         },
       });
   
-      if (response.status === 200) {
-        atualizarDados();
+      if(response.status === 200) {
         adicionarTarefa(response.data);
+        
+        fetchDados();
       } else {
         console.error("Erro ao atualizar tarefa:", response.data);
       }
@@ -198,9 +199,9 @@ export default function Tarefa({ task, atualizarDados }: any) {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (response.status === 200) {
-        atualizarDados();
+      if(response.status === 200) {
         removerTarefa(id);
+        fetchDados();
       } else {
         console.error("Erro ao deletar tarefa:", response.data);
       }

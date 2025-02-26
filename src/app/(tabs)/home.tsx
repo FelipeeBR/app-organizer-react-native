@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { BoardRepository } from '@felipemen74/react-native-draganddrop-board';
 import { Board } from '@felipemen74/react-native-draganddrop-board';
 import axios from 'axios';
@@ -8,6 +8,7 @@ import { Alert, View } from "react-native";
 import ItemsHome from "../components/ItemsHome";
 import useTarefaStore from "../useTarefaStore";
 import useNotificacaoStore from "../useNotificacaoStore";
+import { useFocusEffect } from "@react-navigation/native";
 
 interface ITarefa {
   id: number;
@@ -18,7 +19,7 @@ interface ITarefa {
 }
 
 export default function Home() {
-    const { tarefasHome, adicionarTarefa, adicionarTarefas } = useTarefaStore();
+    const { tarefasHome, adicionarTarefa, adicionarTarefas, atualizarDados } = useTarefaStore();
     const { carregarNotificacoes } = useNotificacaoStore();
 
     const [selectedItem, setSelectedItem] = useState(null);
@@ -70,7 +71,32 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        if (tarefasHome.length > 0) {
+        if(tarefasHome.length > 0) {
+            const updatedTarefas = tarefas.map((tarefa) => {
+                let filteredRows: ITarefa[] = [];
+    
+                switch (tarefa.id) {
+                    case 1:
+                        filteredRows = tarefasHome.filter((t) => t.status === "PENDING");
+                        break;
+                    case 2:
+                        filteredRows = tarefasHome.filter((t) => t.status === "IN_PROGRESS");
+                        break;
+                    case 3:
+                        filteredRows = tarefasHome.filter((t) => t.status === "COMPLETED");
+                        break;
+                    default:
+                        filteredRows = [];
+                }
+    
+                return {
+                    ...tarefa,
+                    rows: filteredRows,
+                };
+            });
+    
+            setTarefas(updatedTarefas);
+        }else{
             const updatedTarefas = tarefas.map((tarefa) => {
                 let filteredRows: ITarefa[] = [];
     
@@ -97,30 +123,6 @@ export default function Home() {
             setTarefas(updatedTarefas);
         }
     }, [tarefasHome]);
-
-    /*const updateTarefaStatus = async (id: number, status: any) => {
-        const tarefa = { ...listTarefas.find((task) => task.id === id), status };
-        const token = await SecureStore.getItemAsync("authToken");
-        if(!token) {
-            console.error('Token não encontrado');
-            return;
-        }
-        try {
-            const response = await axios.put(`${process.env.EXPO_PUBLIC_API_URL}/tarefa/${id}`, {
-                ...tarefa
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-            });
-            atualizarDados();
-            adicionarTarefa(response.data);
-            return response.data;
-        } catch (error) {
-            console.error('Erro ao atualizar tarefa:', error);
-        }
-    }*/
 
     const updateTarefaStatus = async (id: number, status: string) => {
         const tarefa = listTarefas.find((task) => task.id === id);
@@ -171,7 +173,7 @@ export default function Home() {
         }
     };
 
-    const atualizarDados = async () => {
+    const fetchDados = async () => {
         try {
             const tokenData = await SecureStore.getItemAsync("authToken");
             if(!tokenData) {
@@ -196,16 +198,23 @@ export default function Home() {
             { text: 'OK' },
         ]);
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchDados();
+            atualizarDados();
+        }, [atualizarDados])
+      );
     
     return (
         <View className="bg-gray-200">
-            <ItemsHome atualizarDados={atualizarDados}/>
+            <ItemsHome fetchDados={fetchDados}/>
             <Board
                 boardRepository={boardRepository}
                 open={handleOpen}
                 onDragEnd={handleDragEnd}
                 isWithCountBadge={false}
-                cardContent={(task: any) => (<Tarefa key={task.id} task={task} atualizarDados={atualizarDados} />)}
+                cardContent={(task: any) => (<Tarefa key={task.id} task={task} fetchDados={fetchDados} />)}
             />
         </View>
     );

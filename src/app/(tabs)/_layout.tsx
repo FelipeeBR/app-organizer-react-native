@@ -2,9 +2,20 @@ import FontAwesome from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Tabs } from 'expo-router';
 import useNotificacaoStore from "../useNotificacaoStore";
+import useTarefaStore from '../useTarefaStore';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 export default function TabLayout() {
     const { notificacoes } = useNotificacaoStore();
+
+    const atualizarDados = useTarefaStore((state) => state.atualizarDados);
+
+    useFocusEffect(
+        useCallback(() => {
+            atualizarDados();
+        }, [atualizarDados])
+    );
 
     return (
         <Tabs screenOptions={{ tabBarActiveTintColor: '#1F2937' }}>
