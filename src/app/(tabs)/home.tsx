@@ -204,7 +204,7 @@ export default function Home() {
             fetchDados();
             atualizarDados();
         }, [atualizarDados])
-      );
+    );
     
     return (
         <View className="bg-gray-200">

@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, View, Modal, TextInput, Platform, Pressable, ScrollView } from "react-native";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { format, parse, set, startOfDay } from 'date-fns';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -11,6 +11,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import useTarefaStore from "../useTarefaStore";
+import { useFocusEffect } from "@react-navigation/native";
 
 const inputValidation = yup.object().shape({
     title: yup.string().required('Titulo é obrigatório'),
@@ -67,25 +68,32 @@ export default function ItemsHome({ atualizarDados}: any) {
         }
     };
 
-    useEffect(() => {
-        const fetchDisciplinas = async () => {
-          try {
-            const token = await SecureStore.getItemAsync("authToken");
-            if (token) {
-              const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/disciplinas`, {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              });
-              setDisciplinas(response.data);
-              setSelectDisciplina(response.data[0].id);
-            }
-          } catch (error) {
-            console.error("Erro ao buscar disciplinas:", error);
+    const fetchDisciplinas = async () => {
+        try {
+          const token = await SecureStore.getItemAsync("authToken");
+          if (token) {
+            const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/disciplinas`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            setDisciplinas(response.data);
+            setSelectDisciplina(response.data[0].id);
           }
-        }; 
+        } catch (error) {
+          console.error("Erro ao buscar disciplinas:", error);
+        }
+    }; 
+
+    useEffect(() => {
         fetchDisciplinas();
-      }, []);
+    }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchDisciplinas();
+        }, [])
+    );
 
     const handleOpen = () => {
         setModalVisible(true); 
