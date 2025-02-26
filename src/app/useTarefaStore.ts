@@ -54,7 +54,7 @@ const useTarefaStore = create<TarefaStore>((set) => ({
 
             set(() => ({ tarefasHome: response.data }));
         } catch (error) {
-            console.error("Erro ao buscar tarefas:", error);
+            set(() => ({ tarefasHome: [] }));
         }
     }
 }));

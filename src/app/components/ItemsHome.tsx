@@ -21,7 +21,7 @@ const inputValidation = yup.object().shape({
     date: yup.date().required('Escolha a data'),
 });
 
-export default function ItemsHome({ atualizarDados}: any) {
+export default function ItemsHome({ fetchDados}: any) {
     const [modalVisible, setModalVisible] = useState(false);
     const [selectDisciplina, setSelectDisciplina] = useState();
     const [selectPriority, setSelectPriority] = useState();
@@ -128,7 +128,8 @@ export default function ItemsHome({ atualizarDados}: any) {
 
             if(response.status === 201) {
                 adicionarTarefa(response.data);
-                atualizarDados();
+                setModalVisible(!modalVisible);
+                fetchDados();
             } else {
               console.error("Erro ao criar tarefa:", response.data);
             }
@@ -189,7 +190,7 @@ export default function ItemsHome({ atualizarDados}: any) {
                                 setSelectDisciplina(itemValue)
                                 }>
                                 {disciplinas.length === 0 ? (
-                                <Picker.Item label="Carregando disciplinas..." value="" enabled={false} />
+                                <Picker.Item label="Nenhuma disciplina..." value="" enabled={false} />
                                 ) : (
                                 disciplinas.map((disciplina: any) => (
                                     <Picker.Item key={disciplina.id} label={disciplina.name} value={disciplina.id} />
