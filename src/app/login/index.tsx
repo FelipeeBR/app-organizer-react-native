@@ -134,7 +134,12 @@ export default function Login() {
           </View>
 
           <View className='flex items-center justify-center mt-3'>
-            <Text>Não possui uma conta? <Link href={'/register/register'} className='text-blue-500 underline'>Cadastre-se</Link></Text>
+            <Text>
+              Não possui uma conta?
+              <Text className='text-blue-500 underline' onPress={() => router.push('/register/register')}>
+                Cadastre-se
+              </Text>
+            </Text>
           </View>
         </View>
       </View>
