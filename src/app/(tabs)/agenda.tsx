@@ -75,7 +75,7 @@ export default function Agenda() {
                     }}
                 />
             </View>
-            <ScrollView className="flex-1 p-4 min-h-[90%] bg-gray-200" contentContainerStyle={{ paddingBottom: 50 }}>
+            <ScrollView className="flex-1 p-4 min-h-[70%] bg-gray-200" contentContainerStyle={{ paddingBottom: 50 }}>
                 {loading ? (
                     <View className="flex-1 items-center justify-center">
                         <ActivityIndicator size="large" color="#0000ff" />
