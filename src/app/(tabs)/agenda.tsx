@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
-import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import axios from 'axios';
 import * as SecureStore from "expo-secure-store";
 import CardAgenda from '../components/CardAgenda';
@@ -25,10 +25,20 @@ today: 'Hoje'
 
 LocaleConfig.defaultLocale = 'pt';
 
+type MarkedDateType = {
+    [date: string]: {
+        customStyles?: {
+            container?: object;
+            text?: object;
+        };
+        description?: string;
+    };
+};
+
 export default function Agenda() {
     const [selected, setSelected] = useState('');
     const [agendas, setAgendas] = useState<any[]>([]);
-    const [markedDates, setMarkedDates] = useState({});
+    const [markedDates, setMarkedDates] = useState<MarkedDateType>({});
     const [loading, setLoading] = useState(true);
 
     const atualizarDados = async () => {
@@ -54,6 +64,7 @@ export default function Agenda() {
                             fontWeight: 'bold',
                         },
                     },
+                    description: agenda.description,
                 }; 
                 return acc;
             }, {});
@@ -79,6 +90,9 @@ export default function Agenda() {
                 <Calendar
                     onDayPress={(day: any) => {
                         setSelected(day.dateString);
+                        if(markedDates[day.dateString] && markedDates[day.dateString].description) {
+                            Alert.alert("Sobre", markedDates[day.dateString].description);
+                        }
                     }}
                     markingType="custom"
                     markedDates={{
