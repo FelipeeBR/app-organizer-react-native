@@ -259,6 +259,9 @@ export default function CardAgenda({ info, atualizarDados }: any) {
                                 <Picker.Item label="Trabalho" value="TRABALHO" />
                                 <Picker.Item label="Prova" value="PROVA" />
                                 <Picker.Item label="Evento" value="EVENTO" />
+                                <Picker.Item label="Reunião" value="REUNIAO" />
+                                <Picker.Item label="Aula" value="AULA" />
+                                <Picker.Item label="Importante" value="IMPORTANTE" />
                             </Picker>
                             <View>
                                 {errors.tipo && <Text className="text-red-500">{errors.tipo.message}</Text>}

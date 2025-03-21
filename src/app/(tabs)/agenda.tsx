@@ -33,27 +33,38 @@ export default function Agenda() {
 
     const atualizarDados = async () => {
         try {
-          const token = await SecureStore.getItemAsync("authToken");
-          const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/agendas`, {
-            headers: {
-              Authorization: `Bearer ${String(token)}`,
-            },
-          });
-          setAgendas(response.data);
-          setLoading(false);
-          const formattedDates = response.data.reduce((acc: any, agenda: any) => {
-              const date = agenda.date.split('T')[0]; 
-              acc[date] = { marked: true, dotColor: 'red' }; 
-              return acc;
-          }, {});
+            const token = await SecureStore.getItemAsync("authToken");
+            const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/agendas`, {
+                headers: {
+                Authorization: `Bearer ${String(token)}`,
+                },
+            });
+            setAgendas(response.data);
+            setLoading(false);
+            const formattedDates = response.data.reduce((acc: any, agenda: any) => {
+                const date = agenda.date.split('T')[0]; 
+                acc[date] = {
+                    customStyles: {
+                        container: {
+                            backgroundColor: 'blue',
+                            borderRadius: 10,
+                        },
+                        text: {
+                            color: 'white',
+                            fontWeight: 'bold',
+                        },
+                    },
+                }; 
+                return acc;
+            }, {});
 
-          setMarkedDates(formattedDates);
+            setMarkedDates(formattedDates);
         } catch (error) {
             setAgendas([]);
             setLoading(false);
           return;
         }
-      };
+    };
 
     useEffect(() => {
         atualizarDados();
@@ -69,6 +80,7 @@ export default function Agenda() {
                     onDayPress={(day: any) => {
                         setSelected(day.dateString);
                     }}
+                    markingType="custom"
                     markedDates={{
                         ...markedDates,
                         [selected]: { selected: true, disableTouchEvent: true, selectedDotColor: 'blue', selectedColor: 'blue', dotColor: 'blue', marked: true },
