@@ -1,6 +1,5 @@
 import { Text, TouchableOpacity, View, Modal, TextInput, Platform, Pressable } from "react-native";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useEffect, useMemo, useState } from "react";
 import { add, addDays, addHours, format, parse, parseISO } from 'date-fns';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -19,6 +18,12 @@ const getTipo = (tipo: any) => {
         return <View><Text className='flex items-center gap-2 text-white'>Prova</Text></View>; 
         case 'EVENTO':
         return <View><Text className='flex items-center gap-2 text-white'>Evento</Text></View>; 
+        case 'REUNIAO':
+        return <View><Text className='flex items-center gap-2 text-white'>Reunião</Text></View>;
+        case 'AULA':
+        return <View><Text className='flex items-center gap-2 text-white'>Aula</Text></View>;
+        case 'IMPORTANTE':
+        return <View><Text className='flex items-center gap-2 text-white'>Importante</Text></View>;
         default:
         return <View><Text className='flex items-center gap-2 text-white'>Evento</Text></View>;
     }
@@ -26,13 +31,19 @@ const getTipo = (tipo: any) => {
 
 const getColor = (tipo: any) => {
     switch (tipo) {
-      case 'TRABALHO':
-        return 'bg-green-500'; 
-      case 'PROVA':
-        return 'bg-red-500'; 
-      case 'EVENTO':
-        return 'bg-blue-500'; 
-      default:
+        case 'TRABALHO':
+            return 'bg-green-500'; 
+        case 'PROVA':
+            return 'bg-red-500'; 
+        case 'EVENTO':
+            return 'bg-blue-500'; 
+        case 'REUNIAO':
+            return 'bg-yellow-500';
+        case 'AULA':
+            return 'bg-indigo-500';
+        case 'IMPORTANTE':
+            return 'bg-orange-500';
+        default:
         return 'bg-gray-500';
     }
 };
