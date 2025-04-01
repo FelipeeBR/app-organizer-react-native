@@ -13,6 +13,7 @@ import { RichText, Toolbar, useEditorBridge, Images } from '@10play/tentap-edito
 import { useLocalSearchParams } from "expo-router";
 import axios from 'axios';
 import * as SecureStore from "expo-secure-store";
+import { Picker } from '@react-native-picker/picker';
 
 
 export default function AnotacaoDescription() {
@@ -20,6 +21,8 @@ export default function AnotacaoDescription() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const router = useRouter();
+    const [selectDisciplina, setSelectDisciplina] = useState();
+    const [disciplinas, setDisciplinas] = useState([]);
 
     useEffect(() => {
         const fetchAnotacao = async () => {
@@ -32,6 +35,7 @@ export default function AnotacaoDescription() {
             });
             setDescription(response.data.description);
             setTitle(response.data.title);
+            setSelectDisciplina(response.data.disciplinaId);
         } catch (error) {
             
         }
@@ -64,6 +68,26 @@ export default function AnotacaoDescription() {
             console.log(error);
         }
     };
+
+    const fetchDisciplinas = async () => {
+        try {
+            const token = await SecureStore.getItemAsync("authToken");
+            if (token) {
+            const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/disciplinas`, {
+                headers: {
+                Authorization: `Bearer ${token}`,
+                },
+            });
+            setDisciplinas(response.data);
+            }
+        } catch (error) {
+            console.error("Erro ao buscar disciplinas:", error);
+        }
+    }; 
+     useEffect(() => {
+        fetchDisciplinas();
+    }, []);
+
     return (
         <View className='flex-1'>
             <Text className="text-xl font-bold m-3">Titulo</Text>
@@ -77,6 +101,22 @@ export default function AnotacaoDescription() {
                     onChangeText={setTitle}
                     />
                 </View>
+            </View>
+            <View>
+                <Text className="text-xl font-bold m-3">Disciplina (Opcional)</Text>
+                <Picker
+                    selectedValue={selectDisciplina}
+                    onValueChange={(itemValue, itemIndex) =>
+                    setSelectDisciplina(itemValue)
+                    }>
+                    {disciplinas.length === 0 ? (
+                    <Picker.Item label="Nenhuma disciplina..." value="" enabled={false} />
+                    ) : (
+                    disciplinas.map((disciplina: any) => (
+                        <Picker.Item key={disciplina.id} label={disciplina.name} value={disciplina.id} />
+                    ))
+                    )}
+                </Picker>
             </View>
             <SafeAreaView className="flex-1 mx-2">
                 <RichText editor={editor}/>

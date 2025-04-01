@@ -5,8 +5,12 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRouter } from "expo-router";
 
 export default function CardAnotacao({ info }: any) {
-    const {id, title} = info;
+    const {id, title, createdAt} = info;
     const router = useRouter();
+
+    const datePart = createdAt.split('T')[0];
+    const [year, month, day] = datePart.split('-');
+    const formattedDate = `${day}/${month}/${year}`;
 
     const handleDeleteAnotacao = async () => {
         try {
@@ -31,6 +35,11 @@ export default function CardAnotacao({ info }: any) {
                 <View className="flex flex-col flex-grow">
                     <Text>
                         {title}
+                    </Text>
+                </View>
+                <View className="flex flex-col flex-grow">
+                    <Text>
+                        {formattedDate}
                     </Text>
                 </View>
             </Pressable>

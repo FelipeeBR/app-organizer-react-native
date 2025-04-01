@@ -15,6 +15,7 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useRouter } from "expo-router";
+import { Picker } from '@react-native-picker/picker';
 
 const inputValidation = yup.object().shape({
     title: yup.string().required('O titulo é obrigatório'),
@@ -34,6 +35,28 @@ export default function AnotacaoCreate () {
         autofocus: true,
         initialContent,
     });
+    const [selectDisciplina, setSelectDisciplina] = useState();
+    const [disciplinas, setDisciplinas] = useState([]);
+
+    const fetchDisciplinas = async () => {
+        try {
+            const token = await SecureStore.getItemAsync("authToken");
+            if (token) {
+            const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/disciplinas`, {
+                headers: {
+                Authorization: `Bearer ${token}`,
+                },
+            });
+            setDisciplinas(response.data);
+            }
+        } catch (error) {
+            console.error("Erro ao buscar disciplinas:", error);
+        }
+    }; 
+
+    useEffect(() => {
+        fetchDisciplinas();
+    }, []);
   
     const onSubmit = async (data: any) => {
         try {
@@ -42,6 +65,7 @@ export default function AnotacaoCreate () {
             const response = await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/anotacao`, {
                 title: data.title,
                 description: description,
+                disciplinaId: selectDisciplina,
                 token: token
             }, {
                 headers: {
@@ -71,6 +95,22 @@ export default function AnotacaoCreate () {
             </View>
             <View>
                 {errors.title && <Text className="text-red-500">{errors.title.message}</Text>}
+            </View>
+            <View>
+                <Text className="text-xl font-bold m-3">Disciplina (Opcional)</Text>
+                <Picker
+                    selectedValue={selectDisciplina}
+                    onValueChange={(itemValue, itemIndex) =>
+                    setSelectDisciplina(itemValue)
+                    }>
+                    {disciplinas.length === 0 ? (
+                    <Picker.Item label="Nenhuma disciplina..." value="" enabled={false} />
+                    ) : (
+                    disciplinas.map((disciplina: any) => (
+                        <Picker.Item key={disciplina.id} label={disciplina.name} value={disciplina.id} />
+                    ))
+                    )}
+                </Picker>
             </View>
             <SafeAreaView className="flex-1 mx-2">
                 <RichText editor={editor}/>

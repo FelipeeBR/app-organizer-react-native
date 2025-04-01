@@ -1,5 +1,4 @@
 import { Text, TouchableOpacity, View, Modal, TextInput, Platform, Pressable, ScrollView } from "react-native";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useCallback, useEffect, useState } from "react";
 import { format, parse, set, startOfDay } from 'date-fns';
