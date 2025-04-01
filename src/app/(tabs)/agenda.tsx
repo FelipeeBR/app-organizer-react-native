@@ -5,6 +5,7 @@ import axios from 'axios';
 import * as SecureStore from "expo-secure-store";
 import CardAgenda from '../components/CardAgenda';
 import ItemsAgenda from '../components/ItemsAgenda';
+import { format } from 'date-fns';
 
 LocaleConfig.locales['pt'] = {
 monthNames: [
@@ -25,14 +26,28 @@ today: 'Hoje'
 
 LocaleConfig.defaultLocale = 'pt';
 
-type MarkedDateType = {
-    [date: string]: {
-        customStyles?: {
-            container?: object;
-            text?: object;
-        };
-        description?: string;
+type AgendaItem = {
+    id: string;
+    date: string;
+    description: string;
+};
+
+type CustomMarkedDate = {
+    customStyles: {
+      container: {
+        backgroundColor: string;
+        borderRadius: number;
+      };
+      text: {
+        color: string;
+        fontWeight: string;
+      };
     };
+    agendas: AgendaItem[];
+};
+  
+type MarkedDateType = {
+    [date: string]: CustomMarkedDate;
 };
 
 export default function Agenda() {
@@ -44,16 +59,28 @@ export default function Agenda() {
     const atualizarDados = async () => {
         try {
             const token = await SecureStore.getItemAsync("authToken");
-            const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/agendas`, {
+            const response = await axios.get<AgendaItem[]>(`${process.env.EXPO_PUBLIC_API_URL}/agendas`, {
                 headers: {
-                Authorization: `Bearer ${String(token)}`,
+                    Authorization: `Bearer ${String(token)}`,
                 },
             });
             setAgendas(response.data);
             setLoading(false);
-            const formattedDates = response.data.reduce((acc: any, agenda: any) => {
-                const date = agenda.date.split('T')[0]; 
-                acc[date] = {
+            
+            const datesMap = new Map<string, AgendaItem[]>();
+            
+            response.data.forEach((agenda) => {
+                const date = agenda.date.split('T')[0];
+                if (!datesMap.has(date)) {
+                    datesMap.set(date, []);
+                }
+                datesMap.get(date)?.push(agenda);
+            });
+            
+            const formattedDates: MarkedDateType = {};
+            
+            datesMap.forEach((agendasForDate, date) => {
+                formattedDates[date] = {
                     customStyles: {
                         container: {
                             backgroundColor: 'blue',
@@ -64,22 +91,43 @@ export default function Agenda() {
                             fontWeight: 'bold',
                         },
                     },
-                    description: agenda.description,
-                }; 
-                return acc;
-            }, {});
-
+                    agendas: agendasForDate,
+                };
+            });
+            
             setMarkedDates(formattedDates);
         } catch (error) {
             setAgendas([]);
             setLoading(false);
-          return;
+            return;
         }
     };
 
     useEffect(() => {
         atualizarDados();
-    }, [agendas]);
+    }, []); 
+
+    const showAgendasForDate = (dateString: string) => {
+        if (markedDates[dateString] && markedDates[dateString].agendas) {
+            const agendasForDate = markedDates[dateString].agendas;
+            
+            if (agendasForDate.length === 1) {
+                Alert.alert("Sobre", agendasForDate[0].description);
+            } else {
+                const message = agendasForDate.map((agenda, index) => 
+                    `${index + 1}. ${agenda.description}\n`
+                ).join('\n');
+                
+                Alert.alert(
+                    `Agendas em ${format(new Date(dateString), 'dd/MM/yyyy')}`,
+                    message,
+                    [
+                        { text: "OK" }
+                    ]
+                );
+            }
+        }
+    };
 
     return (
         <View className="bg-gray-200">
@@ -90,14 +138,19 @@ export default function Agenda() {
                 <Calendar
                     onDayPress={(day: any) => {
                         setSelected(day.dateString);
-                        if(markedDates[day.dateString] && markedDates[day.dateString].description) {
-                            Alert.alert("Sobre", markedDates[day.dateString].description);
-                        }
+                        showAgendasForDate(day.dateString);
                     }}
                     markingType="custom"
                     markedDates={{
                         ...markedDates,
-                        [selected]: { selected: true, disableTouchEvent: true, selectedDotColor: 'blue', selectedColor: 'blue', dotColor: 'blue', marked: true },
+                        [selected]: { 
+                            selected: true, 
+                            disableTouchEvent: true, 
+                            selectedDotColor: 'blue', 
+                            selectedColor: 'blue', 
+                            dotColor: 'blue', 
+                            marked: true 
+                        },
                     }}
                 />
             </View>
